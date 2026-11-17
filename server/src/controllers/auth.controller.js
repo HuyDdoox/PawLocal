@@ -4,7 +4,8 @@ const User = require('../models/User');
 
 // Helper to generate JWT
 const generateToken = (id, role) => {
-  return jwt.sign({ id, role }, process.env.JWT_SECRET, {
+  const secret = process.env.JWT_SECRET || 'pawlocal_super_secret_jwt_key_2026';
+  return jwt.sign({ id, role }, secret, {
     expiresIn: '7d',
   });
 };
