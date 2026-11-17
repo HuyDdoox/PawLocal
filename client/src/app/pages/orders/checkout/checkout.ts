@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { ProductService } from '../../../services/product.service';
 import { OrderService } from '../../../services/order.service';
+import { Order } from '../../../models/order.model';
 
 @Component({
   selector: 'app-checkout',
@@ -22,6 +23,11 @@ export class Checkout implements OnInit {
 
   readonly isSubmitting = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
+  readonly selectedPaymentMethod = signal<'COD' | 'VIETQR'>('VIETQR');
+  readonly showQrModal = signal<boolean>(false);
+  readonly createdOrder = signal<Order | null>(null);
+  readonly isConfirmingPaid = signal<boolean>(false);
+  readonly copyFeedback = signal<string | null>(null);
 
   readonly deliveryFee = 30000;
 
@@ -53,6 +59,42 @@ export class Checkout implements OnInit {
     return sub >= 500000 ? sub : sub + this.deliveryFee;
   }
 
+  selectPaymentMethod(method: 'COD' | 'VIETQR'): void {
+    this.selectedPaymentMethod.set(method);
+  }
+
+  copyToClipboard(text: string, label: string): void {
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      this.copyFeedback.set(`Đã sao chép ${label}!`);
+      setTimeout(() => this.copyFeedback.set(null), 2500);
+    });
+  }
+
+  onConfirmPayment(): void {
+    const order = this.createdOrder();
+    if (!order) return;
+
+    this.isConfirmingPaid.set(true);
+    this.orderService.confirmPayment(order._id).subscribe({
+      next: (res) => {
+        this.isConfirmingPaid.set(false);
+        this.showQrModal.set(false);
+        alert('🎉 Cảm ơn bạn! Hệ thống đã ghi nhận thanh toán VietQR và đang chuẩn bị giao hàng.');
+        this.router.navigate(['/my-orders']);
+      },
+      error: (err) => {
+        this.isConfirmingPaid.set(false);
+        alert(err.error?.message || 'Có lỗi khi cập nhật trạng thái thanh toán.');
+      },
+    });
+  }
+
+  closeModalAndGoToOrders(): void {
+    this.showQrModal.set(false);
+    this.router.navigate(['/my-orders']);
+  }
+
   onSubmit(): void {
     if (this.checkoutForm.invalid) {
       this.checkoutForm.markAllAsTouched();
@@ -77,14 +119,21 @@ export class Checkout implements OnInit {
           address: formVal.address,
           note: formVal.note,
         },
+        paymentMethod: this.selectedPaymentMethod(),
       })
       .subscribe({
         next: (res) => {
           this.isSubmitting.set(false);
-          if (res.success) {
+          if (res.success && res.data) {
             this.productService.clearCart();
-            alert('🎉 Đặt hàng COD thành công! Mã đơn: ' + res.data?._id?.substring(res.data._id.length - 6));
-            this.router.navigate(['/my-orders']);
+
+            if (this.selectedPaymentMethod() === 'VIETQR') {
+              this.createdOrder.set(res.data);
+              this.showQrModal.set(true);
+            } else {
+              alert('🎉 Đặt hàng COD thành công! Mã đơn: ' + res.data._id.substring(res.data._id.length - 6).toUpperCase());
+              this.router.navigate(['/my-orders']);
+            }
           }
         },
         error: (err) => {

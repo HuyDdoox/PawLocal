@@ -142,6 +142,361 @@
   margin: 0;
 }
 
+.payment-methods-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.payment-option-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.payment-option-card:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.payment-option-card.active {
+  border-color: #f97316;
+  background: #fffaf5;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.12);
+}
+
+.option-radio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radio-dot {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #cbd5e1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.radio-dot.checked {
+  border-color: #f97316;
+}
+
+.radio-dot.checked::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: #f97316;
+  border-radius: 50%;
+}
+
+.option-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+}
+
+.option-icon.qr-icon {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+.option-icon.cod-icon-box {
+  background: #ffedd5;
+  color: #ea580c;
+}
+
+.option-text {
+  flex: 1;
+}
+
+.option-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.option-text strong {
+  font-size: 0.85rem;
+  color: #0f172a;
+}
+
+.badge-recommended {
+  background: #22c55e;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.option-text p {
+  font-size: 0.72rem;
+  color: #64748b;
+  margin: 2px 0 0;
+}
+
+/* Modal VietQR */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+}
+
+.modal-card.vietqr-modal {
+  background: #ffffff;
+  border-radius: 20px;
+  max-width: 440px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.modal-title-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vietqr-logo-tag {
+  background: #ef4444;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
+.modal-title-box h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.btn-close-modal {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.btn-close-modal:hover {
+  color: #0f172a;
+}
+
+.modal-body {
+  padding: 16px 20px 20px;
+}
+
+.qr-instructions {
+  font-size: 0.8rem;
+  color: #475569;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.qr-image-wrapper {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.vietqr-image {
+  max-width: 250px;
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.alert-copied {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 6px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.transfer-details-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.detail-row.highlight {
+  border-top: 1px dashed #cbd5e1;
+  border-bottom: 1px dashed #cbd5e1;
+  padding: 6px 0;
+}
+
+.detail-row .label {
+  color: #64748b;
+}
+
+.detail-row .val {
+  color: #0f172a;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.font-mono {
+  font-family: monospace;
+}
+
+.text-orange {
+  color: #ea580c;
+  font-size: 0.95rem;
+}
+
+.val-copy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-copy-chip {
+  background: #e2e8f0;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #334155;
+  padding: 3px 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  transition: background 0.15s;
+}
+
+.btn-copy-chip:hover {
+  background: #cbd5e1;
+}
+
+.note-text {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 800;
+}
+
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-confirm-paid {
+  width: 100%;
+  padding: 12px;
+  background: #22c55e;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-confirm-paid:hover:not(:disabled) {
+  background: #16a34a;
+}
+
+.btn-confirm-paid:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.btn-skip-to-orders {
+  width: 100%;
+  padding: 10px;
+  background: none;
+  border: 1px solid #cbd5e1;
+  color: #64748b;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-skip-to-orders:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
 .price-breakdown {
   display: flex;
   flex-direction: column;

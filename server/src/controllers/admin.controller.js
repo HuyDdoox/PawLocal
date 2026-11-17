@@ -29,24 +29,42 @@ const getAdminOrders = async (req, res) => {
   }
 };
 
-// @desc    Update order status
+// @desc    Update order status and/or payment status
 // @route   PATCH /api/admin/orders/:id/status
 // @access  Private (Admin)
 const updateOrderStatus = async (req, res) => {
   try {
-    const { status } = req.body;
+    const { status, paymentStatus } = req.body;
     const validStatuses = ['pending', 'processing', 'shipped', 'completed', 'cancelled'];
+    const validPaymentStatuses = ['unpaid', 'paid', 'refunded'];
 
-    if (!validStatuses.includes(status)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Trạng thái đơn hàng không hợp lệ',
-      });
+    const updateData = {};
+    if (status) {
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Trạng thái đơn hàng không hợp lệ',
+        });
+      }
+      updateData.status = status;
+    }
+
+    if (paymentStatus) {
+      if (!validPaymentStatuses.includes(paymentStatus)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Trạng thái thanh toán không hợp lệ',
+        });
+      }
+      updateData.paymentStatus = paymentStatus;
+      if (paymentStatus === 'paid') {
+        updateData['paymentDetails.paidAt'] = new Date();
+      }
     }
 
     const order = await Order.findByIdAndUpdate(
       req.params.id,
-      { status },
+      { $set: updateData },
       { new: true }
     ).populate('user', 'name email phone');
 
@@ -59,7 +77,7 @@ const updateOrderStatus = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: `Cập nhật trạng thái đơn sang "${status}" thành công`,
+      message: `Cập nhật trạng thái đơn hàng thành công`,
       data: order,
     });
   } catch (error) {
@@ -99,24 +117,42 @@ const getAdminBookings = async (req, res) => {
   }
 };
 
-// @desc    Update booking status
+// @desc    Update booking status and/or payment status
 // @route   PATCH /api/admin/bookings/:id/status
 // @access  Private (Admin)
 const updateBookingStatus = async (req, res) => {
   try {
-    const { status } = req.body;
+    const { status, paymentStatus } = req.body;
     const validStatuses = ['pending', 'confirmed', 'completed', 'cancelled'];
+    const validPaymentStatuses = ['unpaid', 'paid', 'refunded'];
 
-    if (!validStatuses.includes(status)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Trạng thái lịch hẹn không hợp lệ',
-      });
+    const updateData = {};
+    if (status) {
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Trạng thái lịch hẹn không hợp lệ',
+        });
+      }
+      updateData.status = status;
+    }
+
+    if (paymentStatus) {
+      if (!validPaymentStatuses.includes(paymentStatus)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Trạng thái thanh toán không hợp lệ',
+        });
+      }
+      updateData.paymentStatus = paymentStatus;
+      if (paymentStatus === 'paid') {
+        updateData['paymentDetails.paidAt'] = new Date();
+      }
     }
 
     const booking = await Booking.findByIdAndUpdate(
       req.params.id,
-      { status },
+      { $set: updateData },
       { new: true }
     )
       .populate('user', 'name email phone')
@@ -132,7 +168,7 @@ const updateBookingStatus = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: `Cập nhật trạng thái lịch hẹn sang "${status}" thành công`,
+      message: `Cập nhật trạng thái lịch hẹn thành công`,
       data: booking,
     });
   } catch (error) {

@@ -55,7 +55,23 @@
       @for (b of bookings(); track b._id) {
         <div class="admin-booking-card">
           <div class="card-head">
-            <span class="service-name">{{ b.service?.name }}</span>
+            <div class="head-service-group">
+              <span class="service-name">{{ b.service?.name }}</span>
+              <span class="pay-method-badge" [class.vietqr]="b.paymentMethod === 'VIETQR'">
+                {{ b.paymentMethod === 'VIETQR' ? 'VietQR' : 'Tại quầy' }}
+              </span>
+              <button
+                type="button"
+                class="pay-status-toggle"
+                [class.paid]="b.paymentStatus === 'paid'"
+                [class.unpaid]="b.paymentStatus !== 'paid'"
+                (click)="togglePaymentStatus(b)"
+                title="Bấm để đổi trạng thái thanh toán"
+              >
+                <i class="fa-solid" [class.fa-check]="b.paymentStatus === 'paid'" [class.fa-clock]="b.paymentStatus !== 'paid'"></i>
+                {{ b.paymentStatus === 'paid' ? 'Đã nhận cọc' : 'Chưa thanh toán' }}
+              </button>
+            </div>
             <span class="status-badge status-{{ b.status }}">
               {{ getStatusLabel(b.status) }}
             </span>

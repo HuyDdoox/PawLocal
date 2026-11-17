@@ -1,6 +1,7 @@
 const Booking = require('../models/Booking');
 const Pet = require('../models/Pet');
 const Service = require('../models/Service');
+const { generateBookingQr } = require('../utils/vietqr');
 
 const ALL_SLOTS = ['09:00', '10:30', '13:00', '14:30', '16:00'];
 
@@ -99,6 +100,7 @@ const createBooking = async (req, res) => {
     }
 
     // 4. Create booking
+    const selectedMethod = req.body.paymentMethod === 'VIETQR' ? 'VIETQR' : 'COUNTER';
     const booking = await Booking.create({
       user: req.user._id,
       pet: pet._id,
@@ -107,12 +109,27 @@ const createBooking = async (req, res) => {
       timeSlot,
       status: 'pending',
       price: service.basePrice,
+      paymentMethod: selectedMethod,
+      paymentStatus: 'unpaid',
+      paymentDetails: {
+        qrUrl: '',
+        transferNote: '',
+      },
       note: note ? note.trim() : '',
     });
 
+    if (selectedMethod === 'VIETQR') {
+      booking.paymentDetails.qrUrl = generateBookingQr(booking._id, service.basePrice);
+      booking.paymentDetails.transferNote = `PAWLOCAL SPA ${String(booking._id).slice(-6).toUpperCase()}`;
+      await booking.save();
+    }
+
     return res.status(201).json({
       success: true,
-      message: 'Đặt lịch hẹn grooming thành công! Chúng tôi sẽ sớm xác nhận.',
+      message:
+        selectedMethod === 'VIETQR'
+          ? 'Đặt lịch hẹn thành công! Vui lòng quét mã VietQR để hoàn tất giữ chỗ.'
+          : 'Đặt lịch hẹn grooming thành công! Chúng tôi sẽ sớm xác nhận.',
       data: booking,
     });
   } catch (error) {
@@ -190,9 +207,54 @@ const cancelBooking = async (req, res) => {
   }
 };
 
+// @desc    Confirm customer payment for a booking
+// @route   PATCH /api/bookings/:id/confirm-payment
+// @access  Private
+const confirmBookingPayment = async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy lịch hẹn',
+      });
+    }
+
+    if (
+      booking.user.toString() !== req.user._id.toString() &&
+      req.user.role !== 'admin'
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: 'Bạn không có quyền cập nhật lịch hẹn này',
+      });
+    }
+
+    booking.paymentStatus = 'paid';
+    if (booking.status === 'pending') {
+      booking.status = 'confirmed';
+    }
+    booking.paymentDetails.paidAt = new Date();
+    await booking.save();
+
+    return res.status(200).json({
+      success: true,
+      message: 'Xác nhận thanh toán giữ chỗ thành công! Lịch hẹn đã được xác nhận.',
+      data: booking,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Lỗi khi cập nhật thanh toán lịch hẹn',
+    });
+  }
+};
+
 module.exports = {
   getAvailableSlots,
   createBooking,
   getMyBookings,
   cancelBooking,
+  confirmBookingPayment,
 };

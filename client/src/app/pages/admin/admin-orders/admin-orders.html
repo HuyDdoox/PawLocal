@@ -63,7 +63,23 @@
       @for (order of orders(); track order._id) {
         <div class="admin-order-card">
           <div class="card-head">
-            <span class="order-id">#{{ order._id.slice(-6).toUpperCase() }}</span>
+            <div class="head-code-group">
+              <span class="order-id">#{{ order._id.slice(-6).toUpperCase() }}</span>
+              <span class="pay-method-badge" [class.vietqr]="order.paymentMethod === 'VIETQR'">
+                {{ order.paymentMethod === 'VIETQR' ? 'VietQR' : 'COD' }}
+              </span>
+              <button
+                type="button"
+                class="pay-status-toggle"
+                [class.paid]="order.paymentStatus === 'paid'"
+                [class.unpaid]="order.paymentStatus !== 'paid'"
+                (click)="togglePaymentStatus(order)"
+                title="Bấm để đổi trạng thái thanh toán"
+              >
+                <i class="fa-solid" [class.fa-check]="order.paymentStatus === 'paid'" [class.fa-clock]="order.paymentStatus !== 'paid'"></i>
+                {{ order.paymentStatus === 'paid' ? 'Đã nhận tiền' : 'Chưa thanh toán' }}
+              </button>
+            </div>
             <span class="status-badge status-{{ order.status }}">
               {{ getStatusLabel(order.status) }}
             </span>

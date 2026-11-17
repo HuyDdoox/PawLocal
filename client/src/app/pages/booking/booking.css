@@ -426,3 +426,361 @@
   font-weight: 700;
   cursor: pointer;
 }
+
+/* Booking Pay Options */
+.booking-pay-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pay-choice-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pay-choice-card:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.pay-choice-card.active {
+  border-color: #f97316;
+  background: #fffaf5;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.12);
+}
+
+.pay-radio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radio-circle {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #cbd5e1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.radio-circle.on {
+  border-color: #f97316;
+}
+
+.radio-circle.on::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: #f97316;
+  border-radius: 50%;
+}
+
+.pay-choice-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+}
+
+.pay-choice-icon.qr-bg {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+.pay-choice-icon.store-bg {
+  background: #ffedd5;
+  color: #ea580c;
+}
+
+.pay-choice-info {
+  flex: 1;
+}
+
+.pay-choice-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pay-choice-info strong {
+  font-size: 0.85rem;
+  color: #0f172a;
+}
+
+.badge-fast {
+  background: #22c55e;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.pay-choice-info p {
+  font-size: 0.72rem;
+  color: #64748b;
+  margin: 2px 0 0;
+}
+
+/* My Bookings Badges & Buttons */
+.b-badges-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pay-pill {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.pay-pill.paid {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.pay-pill.unpaid {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+}
+
+.pay-pill.store {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.b-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-qr-pill {
+  padding: 6px 10px;
+  background: #7c3aed;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.15s;
+}
+
+.btn-qr-pill:hover {
+  background: #6d28d9;
+}
+
+/* VietQR Modal styles */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+}
+
+.modal-card.vietqr-modal {
+  background: #ffffff;
+  border-radius: 20px;
+  max-width: 440px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.modal-title-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vietqr-logo-tag {
+  background: #ef4444;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.modal-title-box h3 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.btn-close-modal {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.modal-body {
+  padding: 16px 20px 20px;
+}
+
+.qr-instructions {
+  font-size: 0.8rem;
+  color: #475569;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.qr-image-wrapper {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.vietqr-image {
+  max-width: 250px;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.alert-copied {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 6px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.transfer-details-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.detail-row.highlight {
+  border-top: 1px dashed #cbd5e1;
+  border-bottom: 1px dashed #cbd5e1;
+  padding: 6px 0;
+}
+
+.detail-row .label { color: #64748b; }
+.detail-row .val { color: #0f172a; }
+.font-bold { font-weight: 700; }
+.font-mono { font-family: monospace; }
+.text-orange { color: #ea580c; font-size: 0.95rem; }
+
+.val-copy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-copy-chip {
+  background: #e2e8f0;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #334155;
+  padding: 3px 6px;
+  cursor: pointer;
+}
+
+.note-text {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 800;
+}
+
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-confirm-paid {
+  width: 100%;
+  padding: 12px;
+  background: #22c55e;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3);
+}
+
+.btn-confirm-paid:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.btn-skip-to-orders {
+  width: 100%;
+  padding: 10px;
+  background: none;
+  border: 1px solid #cbd5e1;
+  color: #64748b;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}

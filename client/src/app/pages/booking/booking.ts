@@ -44,7 +44,54 @@ export class Booking implements OnInit {
   readonly selectedServiceId = signal<string>('');
   readonly selectedDate = signal<string>('');
   readonly selectedTimeSlot = signal<string>('');
+  readonly selectedPaymentMethod = signal<'COUNTER' | 'VIETQR'>('VIETQR');
+  readonly showQrModal = signal<boolean>(false);
+  readonly createdBooking = signal<BookingModel | null>(null);
+  readonly isConfirmingPaid = signal<boolean>(false);
+  readonly copyFeedback = signal<string | null>(null);
   note: string = '';
+
+  selectPaymentMethod(method: 'COUNTER' | 'VIETQR'): void {
+    this.selectedPaymentMethod.set(method);
+  }
+
+  openQrModal(booking: BookingModel): void {
+    this.createdBooking.set(booking);
+    this.showQrModal.set(true);
+  }
+
+  closeQrModal(): void {
+    this.showQrModal.set(false);
+    this.createdBooking.set(null);
+  }
+
+  copyToClipboard(text: string, label: string): void {
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      this.copyFeedback.set(`Đã sao chép ${label}!`);
+      setTimeout(() => this.copyFeedback.set(null), 2500);
+    });
+  }
+
+  onConfirmPayment(): void {
+    const b = this.createdBooking();
+    if (!b) return;
+
+    this.isConfirmingPaid.set(true);
+    this.bookingService.confirmPayment(b._id).subscribe({
+      next: (res) => {
+        this.isConfirmingPaid.set(false);
+        this.closeQrModal();
+        alert('🎉 Cảm ơn bạn! Hệ thống đã ghi nhận thanh toán giữ chỗ VietQR và xác nhận lịch hẹn của bạn.');
+        this.loadMyBookings();
+        this.activeTab.set('my-bookings');
+      },
+      error: (err) => {
+        this.isConfirmingPaid.set(false);
+        alert(err.error?.message || 'Có lỗi khi cập nhật trạng thái thanh toán.');
+      },
+    });
+  }
 
   ngOnInit(): void {
     this.generateDays();
@@ -184,17 +231,24 @@ export class Booking implements OnInit {
         serviceId: this.selectedServiceId(),
         date: this.selectedDate(),
         timeSlot: this.selectedTimeSlot(),
+        paymentMethod: this.selectedPaymentMethod(),
         note: this.note,
       })
       .subscribe({
         next: (res) => {
           this.isSubmitting.set(false);
-          if (res.success) {
-            alert('🎉 Đặt lịch hẹn Spa thành công! Cửa hàng sẽ sớm liên hệ xác nhận.');
+          if (res.success && res.data) {
             this.selectedTimeSlot.set('');
             this.note = '';
             this.loadMyBookings();
-            this.activeTab.set('my-bookings');
+
+            if (this.selectedPaymentMethod() === 'VIETQR') {
+              this.createdBooking.set(res.data);
+              this.showQrModal.set(true);
+            } else {
+              alert('🎉 Đặt lịch hẹn Spa thành công! Cửa hàng sẽ sớm liên hệ xác nhận.');
+              this.activeTab.set('my-bookings');
+            }
           }
         },
         error: (err) => {

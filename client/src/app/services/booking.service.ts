@@ -42,9 +42,14 @@ export class BookingService {
     serviceId: string;
     date: string;
     timeSlot: string;
+    paymentMethod?: 'COUNTER' | 'VIETQR';
     note?: string;
   }): Observable<ApiResponse<Booking>> {
     return this.http.post<ApiResponse<Booking>>(`${this.BASE_URL}/bookings`, data);
+  }
+
+  confirmPayment(id: string): Observable<ApiResponse<Booking>> {
+    return this.http.patch<ApiResponse<Booking>>(`${this.BASE_URL}/bookings/${id}/confirm-payment`, {});
   }
 
   getMyBookings(): Observable<ApiResponse<Booking[]>> {

@@ -1,12 +1,14 @@
 const Order = require('../models/Order');
 const Product = require('../models/Product');
+const { generateOrderQr } = require('../utils/vietqr');
 
-// @desc    Create a new COD order
+// @desc    Create a new order (COD or VietQR)
 // @route   POST /api/orders
 // @access  Private (Customer/Admin)
 const createOrder = async (req, res) => {
   try {
-    const { items, shippingAddress } = req.body;
+    const { items, shippingAddress, paymentMethod } = req.body;
+    const selectedMethod = paymentMethod === 'VIETQR' ? 'VIETQR' : 'COD';
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({
@@ -71,7 +73,12 @@ const createOrder = async (req, res) => {
       deliveryFee,
       total,
       status: 'pending',
-      paymentMethod: 'COD',
+      paymentMethod: selectedMethod,
+      paymentStatus: 'unpaid',
+      paymentDetails: {
+        qrUrl: selectedMethod === 'VIETQR' ? generateOrderQr('temp', total) : '',
+        transferNote: '',
+      },
       shippingAddress: {
         recipientName: shippingAddress.recipientName.trim(),
         phone: shippingAddress.phone.trim(),
@@ -79,6 +86,13 @@ const createOrder = async (req, res) => {
         note: shippingAddress.note ? shippingAddress.note.trim() : '',
       },
     });
+
+    // Update real QR with order._id
+    if (selectedMethod === 'VIETQR') {
+      order.paymentDetails.qrUrl = generateOrderQr(order._id, total);
+      order.paymentDetails.transferNote = `PAWLOCAL DH ${String(order._id).slice(-6).toUpperCase()}`;
+      await order.save();
+    }
 
     // Deduct stock for each product
     for (const item of orderItems) {
@@ -89,7 +103,10 @@ const createOrder = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: 'Đặt hàng thành công! Đơn hàng đang được chuẩn bị.',
+      message:
+        selectedMethod === 'VIETQR'
+          ? 'Đặt hàng thành công! Vui lòng quét mã VietQR để thanh toán.'
+          : 'Đặt hàng thành công! Đơn hàng đang được chuẩn bị.',
       data: order,
     });
   } catch (error) {
@@ -159,8 +176,53 @@ const getOrderById = async (req, res) => {
   }
 };
 
+// @desc    Confirm customer payment for an order
+// @route   PATCH /api/orders/:id/confirm-payment
+// @access  Private
+const confirmOrderPayment = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy thông tin đơn hàng',
+      });
+    }
+
+    if (
+      order.user.toString() !== req.user._id.toString() &&
+      req.user.role !== 'admin'
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: 'Bạn không có quyền cập nhật đơn hàng này',
+      });
+    }
+
+    order.paymentStatus = 'paid';
+    if (order.status === 'pending') {
+      order.status = 'processing';
+    }
+    order.paymentDetails.paidAt = new Date();
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message: 'Xác nhận thanh toán thành công! Đơn hàng đang được chuẩn bị để giao.',
+      data: order,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Lỗi khi cập nhật thanh toán đơn hàng',
+    });
+  }
+};
+
 module.exports = {
   createOrder,
   getMyOrders,
   getOrderById,
+  confirmOrderPayment,
 };

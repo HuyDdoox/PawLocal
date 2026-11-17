@@ -16,8 +16,15 @@ export class MyOrders implements OnInit {
 
   readonly orders = signal<Order[]>([]);
   readonly isLoading = signal<boolean>(true);
+  readonly selectedQrOrder = signal<Order | null>(null);
+  readonly isConfirming = signal<boolean>(false);
+  readonly copyFeedback = signal<string | null>(null);
 
   ngOnInit(): void {
+    this.loadOrders();
+  }
+
+  loadOrders(): void {
     this.orderService.getMyOrders().subscribe({
       next: (res) => {
         if (res.success && res.data) {
@@ -27,6 +34,38 @@ export class MyOrders implements OnInit {
       },
       error: () => {
         this.isLoading.set(false);
+      },
+    });
+  }
+
+  openQrModal(order: Order): void {
+    this.selectedQrOrder.set(order);
+  }
+
+  closeQrModal(): void {
+    this.selectedQrOrder.set(null);
+  }
+
+  copyToClipboard(text: string, label: string): void {
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      this.copyFeedback.set(`Đã sao chép ${label}!`);
+      setTimeout(() => this.copyFeedback.set(null), 2500);
+    });
+  }
+
+  confirmPayment(orderId: string): void {
+    this.isConfirming.set(true);
+    this.orderService.confirmPayment(orderId).subscribe({
+      next: (res) => {
+        this.isConfirming.set(false);
+        this.closeQrModal();
+        alert('🎉 Xác nhận thanh toán thành công! Đơn hàng đã được chuyển sang trạng thái đang xử lý.');
+        this.loadOrders();
+      },
+      error: (err) => {
+        this.isConfirming.set(false);
+        alert(err.error?.message || 'Có lỗi xảy ra khi xác nhận thanh toán.');
       },
     });
   }

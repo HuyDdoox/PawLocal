@@ -54,6 +54,20 @@ export class AdminBookings implements OnInit {
     });
   }
 
+  togglePaymentStatus(booking: Booking): void {
+    const nextStatus = booking.paymentStatus === 'paid' ? 'unpaid' : 'paid';
+    this.adminService.updateBookingStatus(booking._id, undefined, nextStatus).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.loadBookings();
+        }
+      },
+      error: (err) => {
+        alert(err.error?.message || 'Lỗi khi cập nhật trạng thái thanh toán');
+      },
+    });
+  }
+
   getStatusLabel(status: BookingStatus): string {
     switch (status) {
       case 'pending': return 'Chờ duyệt';

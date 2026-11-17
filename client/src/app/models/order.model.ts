@@ -20,6 +20,15 @@ export type OrderStatus =
   | 'completed'
   | 'cancelled';
 
+export type PaymentMethod = 'COD' | 'VIETQR';
+export type PaymentStatus = 'unpaid' | 'paid' | 'refunded';
+
+export interface PaymentDetails {
+  qrUrl?: string;
+  transferNote?: string;
+  paidAt?: string;
+}
+
 export interface Order {
   _id: string;
   user: string | { _id: string; name: string; email: string; phone?: string };
@@ -28,7 +37,9 @@ export interface Order {
   deliveryFee: number;
   total: number;
   status: OrderStatus;
-  paymentMethod: 'COD';
+  paymentMethod: PaymentMethod;
+  paymentStatus?: PaymentStatus;
+  paymentDetails?: PaymentDetails;
   shippingAddress: ShippingAddress;
   createdAt: string;
   updatedAt?: string;

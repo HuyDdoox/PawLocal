@@ -36,6 +36,21 @@ const bookingSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
+    paymentMethod: {
+      type: String,
+      enum: ['COUNTER', 'VIETQR'],
+      default: 'COUNTER',
+    },
+    paymentStatus: {
+      type: String,
+      enum: ['unpaid', 'paid', 'refunded'],
+      default: 'unpaid',
+    },
+    paymentDetails: {
+      qrUrl: { type: String, default: '' },
+      paidAt: { type: Date },
+      transferNote: { type: String, default: '' },
+    },
     note: {
       type: String,
       default: '',

@@ -41,9 +41,14 @@ export class AdminService {
     return this.http.get<ApiResponse<Order[]>>(`${this.BASE_URL}/admin/orders`, { params });
   }
 
-  updateOrderStatus(orderId: string, status: OrderStatus): Observable<ApiResponse<Order>> {
+  updateOrderStatus(
+    orderId: string,
+    status?: OrderStatus,
+    paymentStatus?: 'unpaid' | 'paid' | 'refunded'
+  ): Observable<ApiResponse<Order>> {
     return this.http.patch<ApiResponse<Order>>(`${this.BASE_URL}/admin/orders/${orderId}/status`, {
       status,
+      paymentStatus,
     });
   }
 
@@ -54,9 +59,14 @@ export class AdminService {
     return this.http.get<ApiResponse<Booking[]>>(`${this.BASE_URL}/admin/bookings`, { params });
   }
 
-  updateBookingStatus(bookingId: string, status: BookingStatus): Observable<ApiResponse<Booking>> {
+  updateBookingStatus(
+    bookingId: string,
+    status?: BookingStatus,
+    paymentStatus?: 'unpaid' | 'paid' | 'refunded'
+  ): Observable<ApiResponse<Booking>> {
     return this.http.patch<ApiResponse<Booking>>(`${this.BASE_URL}/admin/bookings/${bookingId}/status`, {
       status,
+      paymentStatus,
     });
   }
 

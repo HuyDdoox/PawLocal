@@ -21,8 +21,13 @@ export class OrderService {
   createOrder(data: {
     items: { productId: string; quantity: number }[];
     shippingAddress: ShippingAddress;
+    paymentMethod?: 'COD' | 'VIETQR';
   }): Observable<ApiResponse<Order>> {
     return this.http.post<ApiResponse<Order>>(this.API_URL, data);
+  }
+
+  confirmPayment(orderId: string): Observable<ApiResponse<Order>> {
+    return this.http.patch<ApiResponse<Order>>(`${this.API_URL}/${orderId}/confirm-payment`, {});
   }
 
   getMyOrders(): Observable<ApiResponse<Order[]>> {

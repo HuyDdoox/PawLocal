@@ -54,6 +54,20 @@ export class AdminOrders implements OnInit {
     });
   }
 
+  togglePaymentStatus(order: Order): void {
+    const nextStatus = order.paymentStatus === 'paid' ? 'unpaid' : 'paid';
+    this.adminService.updateOrderStatus(order._id, undefined, nextStatus).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.loadOrders();
+        }
+      },
+      error: (err) => {
+        alert(err.error?.message || 'Lỗi khi cập nhật trạng thái thanh toán');
+      },
+    });
+  }
+
   getStatusLabel(status: OrderStatus): string {
     switch (status) {
       case 'pending': return 'Chờ duyệt';

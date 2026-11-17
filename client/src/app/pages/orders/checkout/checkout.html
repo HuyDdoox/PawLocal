@@ -79,11 +79,45 @@
     <!-- Thanh toán -->
     <div class="card-section">
       <h3 class="card-title">Phương Thức Thanh Toán</h3>
-      <div class="cod-option">
-        <i class="fa-solid fa-money-bill-wave cod-icon"></i>
-        <div class="cod-info">
-          <strong>Thanh toán tiền mặt khi nhận hàng (COD)</strong>
-          <p>Kiểm tra hàng trước khi thanh toán cho nhân viên giao vận</p>
+
+      <div class="payment-methods-grid">
+        <!-- Option VietQR -->
+        <div
+          class="payment-option-card"
+          [class.active]="selectedPaymentMethod() === 'VIETQR'"
+          (click)="selectPaymentMethod('VIETQR')"
+        >
+          <div class="option-radio">
+            <span class="radio-dot" [class.checked]="selectedPaymentMethod() === 'VIETQR'"></span>
+          </div>
+          <div class="option-icon qr-icon">
+            <i class="fa-solid fa-qrcode"></i>
+          </div>
+          <div class="option-text">
+            <div class="option-title-row">
+              <strong>Chuyển khoản VietQR tức thì</strong>
+              <span class="badge-recommended">Khuyên dùng</span>
+            </div>
+            <p>Quét mã bằng app ngân hàng / MoMo, xác nhận tự động</p>
+          </div>
+        </div>
+
+        <!-- Option COD -->
+        <div
+          class="payment-option-card"
+          [class.active]="selectedPaymentMethod() === 'COD'"
+          (click)="selectPaymentMethod('COD')"
+        >
+          <div class="option-radio">
+            <span class="radio-dot" [class.checked]="selectedPaymentMethod() === 'COD'"></span>
+          </div>
+          <div class="option-icon cod-icon-box">
+            <i class="fa-solid fa-money-bill-wave"></i>
+          </div>
+          <div class="option-text">
+            <strong>Thanh toán tiền mặt khi nhận hàng (COD)</strong>
+            <p>Kiểm tra hàng trước khi gửi tiền mặt cho shipper</p>
+          </div>
         </div>
       </div>
 
@@ -93,7 +127,7 @@
           <span>{{ productService.cartTotal() | number:'1.0-0' }}đ</span>
         </div>
         <div class="breakdown-row">
-          <span>Phí giao COD</span>
+          <span>Phí vận chuyển</span>
           <span>{{ productService.cartTotal() >= 500000 ? 'MIỄN PHÍ' : '30,000đ' }}</span>
         </div>
         <div class="breakdown-divider"></div>
@@ -105,11 +139,105 @@
 
       <button type="submit" class="btn-submit-order" [disabled]="isSubmitting()">
         @if (isSubmitting()) {
-          <i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang tạo đơn hàng...
+          <i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang xử lý...
+        } @else if (selectedPaymentMethod() === 'VIETQR') {
+          <i class="fa-solid fa-qrcode mr-2"></i> Tiến Hành Quét Mã VietQR ({{ finalTotal | number:'1.0-0' }}đ)
         } @else {
-          <i class="fa-solid fa-check mr-2"></i> Xác Nhận Đặt Hàng COD ({{ finalTotal | number:'1.0-0' }}đ)
+          <i class="fa-solid fa-check mr-2"></i> Đặt Hàng Thanh Toán COD ({{ finalTotal | number:'1.0-0' }}đ)
         }
       </button>
     </div>
   </form>
+
+  <!-- VietQR Payment Modal Popup -->
+  @if (showQrModal() && createdOrder()) {
+    <div class="modal-backdrop">
+      <div class="modal-card vietqr-modal">
+        <div class="modal-header">
+          <div class="modal-title-box">
+            <span class="vietqr-logo-tag">VietQR</span>
+            <h3>Thanh Toán Đơn Hàng</h3>
+          </div>
+          <button type="button" class="btn-close-modal" (click)="closeModalAndGoToOrders()">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <p class="qr-instructions">
+            Mở ứng dụng <strong>Ngân hàng</strong> hoặc <strong>Ví điện tử (MoMo, ZaloPay)</strong> bất kỳ để quét mã:
+          </p>
+
+          <div class="qr-image-wrapper">
+            <img
+              [src]="createdOrder()?.paymentDetails?.qrUrl"
+              alt="Mã QR thanh toán VietQR"
+              class="vietqr-image"
+            />
+          </div>
+
+          @if (copyFeedback()) {
+            <div class="alert-copied">
+              <i class="fa-solid fa-check mr-1"></i> {{ copyFeedback() }}
+            </div>
+          }
+
+          <div class="transfer-details-box">
+            <div class="detail-row">
+              <span class="label">Ngân hàng:</span>
+              <span class="val font-bold">MBBank (Quân Đội)</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Số tài khoản:</span>
+              <div class="val-copy">
+                <span class="val font-mono">0909123456</span>
+                <button type="button" class="btn-copy-chip" (click)="copyToClipboard('0909123456', 'Số tài khoản')">
+                  <i class="fa-regular fa-copy"></i> Copy
+                </button>
+              </div>
+            </div>
+            <div class="detail-row">
+              <span class="label">Chủ tài khoản:</span>
+              <span class="val">PAWLOCAL PET SHOP</span>
+            </div>
+            <div class="detail-row highlight">
+              <span class="label">Số tiền:</span>
+              <span class="val font-bold text-orange">{{ createdOrder()?.total | number:'1.0-0' }} VNĐ</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Nội dung chuyển khoản:</span>
+              <div class="val-copy">
+                <span class="val font-mono note-text">{{ createdOrder()?.paymentDetails?.transferNote }}</span>
+                <button
+                  type="button"
+                  class="btn-copy-chip"
+                  (click)="copyToClipboard(createdOrder()?.paymentDetails?.transferNote || '', 'Nội dung')"
+                >
+                  <i class="fa-regular fa-copy"></i> Copy
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="btn-confirm-paid"
+              (click)="onConfirmPayment()"
+              [disabled]="isConfirmingPaid()"
+            >
+              @if (isConfirmingPaid()) {
+                <i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang xác nhận...
+              } @else {
+                <i class="fa-solid fa-circle-check mr-2"></i> Tôi Đã Chuyển Khoản Xong
+              }
+            </button>
+            <button type="button" class="btn-skip-to-orders" (click)="closeModalAndGoToOrders()">
+              Xem danh sách đơn hàng của tôi
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 </div>

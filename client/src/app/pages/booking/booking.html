@@ -142,6 +142,49 @@
           />
         </div>
 
+        <!-- Bước 6: Phương Thức Thanh Toán -->
+        <div class="step-group">
+          <label class="step-label">Phương Thức Thanh Toán</label>
+          <div class="booking-pay-options">
+            <div
+              class="pay-choice-card"
+              [class.active]="selectedPaymentMethod() === 'VIETQR'"
+              (click)="selectPaymentMethod('VIETQR')"
+            >
+              <div class="pay-radio">
+                <span class="radio-circle" [class.on]="selectedPaymentMethod() === 'VIETQR'"></span>
+              </div>
+              <div class="pay-choice-icon qr-bg">
+                <i class="fa-solid fa-qrcode"></i>
+              </div>
+              <div class="pay-choice-info">
+                <div class="pay-choice-header">
+                  <strong>Chuyển khoản VietQR giữ chỗ</strong>
+                  <span class="badge-fast">Nhanh chóng</span>
+                </div>
+                <p>Quét mã ngân hàng, ưu tiên giữ đúng khung giờ đẹp</p>
+              </div>
+            </div>
+
+            <div
+              class="pay-choice-card"
+              [class.active]="selectedPaymentMethod() === 'COUNTER'"
+              (click)="selectPaymentMethod('COUNTER')"
+            >
+              <div class="pay-radio">
+                <span class="radio-circle" [class.on]="selectedPaymentMethod() === 'COUNTER'"></span>
+              </div>
+              <div class="pay-choice-icon store-bg">
+                <i class="fa-solid fa-store"></i>
+              </div>
+              <div class="pay-choice-info">
+                <strong>Thanh toán tại quầy Spa</strong>
+                <p>Thanh toán bằng tiền mặt / thẻ khi đưa thú cưng đến làm đẹp</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Submit Button -->
         <button
           type="button"
@@ -151,6 +194,9 @@
         >
           @if (isSubmitting()) {
             <i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang xử lý...
+          } @else if (selectedPaymentMethod() === 'VIETQR') {
+            <i class="fa-solid fa-qrcode mr-2"></i>
+            Quét Mã VietQR Giữ Chỗ ({{ getSelectedServicePrice() | number:'1.0-0' }}đ)
           } @else {
             <i class="fa-solid fa-calendar-check mr-2"></i>
             Xác Nhận Đặt Lịch ({{ getSelectedServicePrice() | number:'1.0-0' }}đ)
@@ -179,9 +225,22 @@
           <div class="booking-item-card">
             <div class="booking-item-header">
               <h4 class="b-service-name">{{ b.service?.name }}</h4>
-              <span class="b-status-pill status-{{ b.status }}">
-                {{ getStatusLabel(b.status) }}
-              </span>
+              <div class="b-badges-group">
+                @if (b.paymentMethod === 'VIETQR') {
+                  <span
+                    class="pay-pill"
+                    [class.paid]="b.paymentStatus === 'paid'"
+                    [class.unpaid]="b.paymentStatus !== 'paid'"
+                  >
+                    {{ b.paymentStatus === 'paid' ? 'VietQR: Đã thanh toán' : 'VietQR: Chờ chuyển khoản' }}
+                  </span>
+                } @else {
+                  <span class="pay-pill store">Tại quầy</span>
+                }
+                <span class="b-status-pill status-{{ b.status }}">
+                  {{ getStatusLabel(b.status) }}
+                </span>
+              </div>
             </div>
 
             <div class="booking-item-body">
@@ -194,13 +253,116 @@
 
             <div class="booking-item-footer">
               <span class="b-price">{{ b.price | number:'1.0-0' }}đ</span>
-              @if (b.status === 'pending' || b.status === 'confirmed') {
-                <button type="button" class="btn-cancel" (click)="cancelBooking(b._id)">Hủy Lịch</button>
-              }
+              <div class="b-actions-row">
+                @if (b.paymentMethod === 'VIETQR' && b.paymentStatus !== 'paid' && b.status !== 'cancelled') {
+                  <button type="button" class="btn-qr-pill" (click)="openQrModal(b)">
+                    <i class="fa-solid fa-qrcode mr-1"></i> Quét mã VietQR
+                  </button>
+                }
+                @if (b.status === 'pending' || b.status === 'confirmed') {
+                  <button type="button" class="btn-cancel" (click)="cancelBooking(b._id)">Hủy Lịch</button>
+                }
+              </div>
             </div>
           </div>
         }
       </div>
     }
+  }
+
+  <!-- Modal VietQR Giữ Chỗ Spa -->
+  @if (showQrModal() && createdBooking()) {
+    <div class="modal-backdrop">
+      <div class="modal-card vietqr-modal">
+        <div class="modal-header">
+          <div class="modal-title-box">
+            <span class="vietqr-logo-tag">VietQR</span>
+            <h3>Thanh Toán Lịch Hẹn Spa #{{ createdBooking()!._id.slice(-6).toUpperCase() }}</h3>
+          </div>
+          <button type="button" class="btn-close-modal" (click)="closeQrModal()">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <p class="qr-instructions">
+            Mở ứng dụng <strong>Ngân hàng</strong> hoặc <strong>Ví điện tử</strong> để quét mã thanh toán giữ chỗ:
+          </p>
+
+          <div class="qr-image-wrapper">
+            <img
+              [src]="createdBooking()?.paymentDetails?.qrUrl"
+              alt="Mã QR thanh toán VietQR"
+              class="vietqr-image"
+            />
+          </div>
+
+          @if (copyFeedback()) {
+            <div class="alert-copied">
+              <i class="fa-solid fa-check mr-1"></i> {{ copyFeedback() }}
+            </div>
+          }
+
+          <div class="transfer-details-box">
+            <div class="detail-row">
+              <span class="label">Dịch vụ:</span>
+              <span class="val font-bold">{{ createdBooking()?.service?.name }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Khung giờ:</span>
+              <span class="val font-bold">{{ createdBooking()?.date }} lúc {{ createdBooking()?.timeSlot }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Ngân hàng:</span>
+              <span class="val font-bold">MBBank (Quân Đội)</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Số tài khoản:</span>
+              <div class="val-copy">
+                <span class="val font-mono">0909123456</span>
+                <button type="button" class="btn-copy-chip" (click)="copyToClipboard('0909123456', 'Số tài khoản')">
+                  <i class="fa-regular fa-copy"></i> Copy
+                </button>
+              </div>
+            </div>
+            <div class="detail-row highlight">
+              <span class="label">Số tiền giữ chỗ:</span>
+              <span class="val font-bold text-orange">{{ createdBooking()?.price | number:'1.0-0' }} VNĐ</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Nội dung CK:</span>
+              <div class="val-copy">
+                <span class="val font-mono note-text">{{ createdBooking()?.paymentDetails?.transferNote }}</span>
+                <button
+                  type="button"
+                  class="btn-copy-chip"
+                  (click)="copyToClipboard(createdBooking()?.paymentDetails?.transferNote || '', 'Nội dung')"
+                >
+                  <i class="fa-regular fa-copy"></i> Copy
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="btn-confirm-paid"
+              (click)="onConfirmPayment()"
+              [disabled]="isConfirmingPaid()"
+            >
+              @if (isConfirmingPaid()) {
+                <i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang xác nhận...
+              } @else {
+                <i class="fa-solid fa-circle-check mr-2"></i> Tôi Đã Chuyển Khoản Xong
+              }
+            </button>
+            <button type="button" class="btn-skip-to-orders" (click)="closeQrModal()">
+              Đóng cửa sổ
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   }
 </div>

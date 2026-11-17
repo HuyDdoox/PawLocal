@@ -62,8 +62,18 @@ const orderSchema = new mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ['COD'],
+      enum: ['COD', 'VIETQR'],
       default: 'COD',
+    },
+    paymentStatus: {
+      type: String,
+      enum: ['unpaid', 'paid', 'refunded'],
+      default: 'unpaid',
+    },
+    paymentDetails: {
+      qrUrl: { type: String, default: '' },
+      paidAt: { type: Date },
+      transferNote: { type: String, default: '' },
     },
     shippingAddress: {
       recipientName: { type: String, required: true },
