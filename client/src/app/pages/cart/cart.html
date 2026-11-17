@@ -1,0 +1,86 @@
+<div class="cart-page">
+  <div class="cart-header">
+    <h1 class="page-title">Giỏ Hàng Của Bạn</h1>
+    <p class="page-desc">
+      Đang có <strong>{{ productService.cartCount() }}</strong> sản phẩm trong giỏ
+    </p>
+  </div>
+
+  @if (productService.cart().length > 0) {
+    <div class="cart-layout">
+      <!-- Danh sách món hàng -->
+      <div class="items-list">
+        @for (item of productService.cart(); track item.product.id || item.product._id) {
+          <div class="cart-item-card">
+            <div class="item-img-box">
+              <i class="fa-solid fa-bone item-fallback-icon"></i>
+              <img [src]="item.product.image" [alt]="item.product.name" class="item-img" (error)="$any($event.target).style.display='none'" />
+            </div>
+
+            <div class="item-details">
+              <h3 class="item-name">{{ item.product.name }}</h3>
+              <span class="item-price">{{ item.product.price | number:'1.0-0' }}đ</span>
+
+              <div class="item-bottom-row">
+                <div class="qty-control">
+                  <button class="qty-btn" (click)="updateQty(item.product.id || item.product._id || '', -1, item.quantity)" [disabled]="item.quantity <= 1">−</button>
+                  <span class="qty-num">{{ item.quantity }}</span>
+                  <button
+                    class="qty-btn"
+                    (click)="updateQty(item.product.id || item.product._id || '', 1, item.quantity)"
+                    [disabled]="item.quantity >= item.product.stock"
+                  >+</button>
+                </div>
+
+                <button
+                  class="btn-delete"
+                  (click)="removeItem(item.product.id || item.product._id || '')"
+                  aria-label="Xóa sản phẩm"
+                >
+                  <i class="fa-regular fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Tóm tắt đơn hàng -->
+      <div class="summary-card">
+        <h3 class="summary-title">Tóm Tắt Đơn Hàng</h3>
+
+        <div class="summary-row">
+          <span>Tạm tính ({{ productService.cartCount() }} món)</span>
+          <span>{{ productService.cartTotal() | number:'1.0-0' }}đ</span>
+        </div>
+
+        <div class="summary-row">
+          <span>Phí vận chuyển COD</span>
+          <span class="free-shipping">{{ productService.cartTotal() >= 500000 ? 'MIỄN PHÍ' : '30,000đ' }}</span>
+        </div>
+
+        <div class="summary-divider"></div>
+
+        <div class="summary-row total-row">
+          <span>Tổng thanh toán</span>
+          <span class="total-price">
+            {{ (productService.cartTotal() + (productService.cartTotal() >= 500000 ? 0 : 30000)) | number:'1.0-0' }}đ
+          </span>
+        </div>
+
+        <button type="button" class="btn-checkout" (click)="onProceedCheckout()">
+          <i class="fa-solid fa-credit-card mr-2"></i> Tiến hành đặt hàng COD
+        </button>
+      </div>
+    </div>
+  } @else {
+    <div class="empty-cart-card">
+      <i class="fa-solid fa-cart-shopping empty-cart-icon"></i>
+      <h2>Giỏ hàng của bạn đang trống</h2>
+      <p>Hãy dạo quanh cửa hàng và chọn các món dinh dưỡng hảo hạng cho Boss nhé!</p>
+      <a routerLink="/products" class="btn-shop-now">
+        <i class="fa-solid fa-bag-shopping mr-2"></i> Khám phá sản phẩm
+      </a>
+    </div>
+  }
+</div>

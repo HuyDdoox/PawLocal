@@ -1,0 +1,61 @@
+<section class="section section-feedback">
+  <div class="section-title-wrap">
+    <div class="title-row">
+      <div>
+        <h2 class="section-title">Đánh Giá Từ Khách Hàng</h2>
+        <span class="section-sub">Trải nghiệm thực tế từ các Sen đồng hành cùng PawLocal</span>
+      </div>
+      <div class="pause-hint">
+        <i class="fa-solid fa-hand-pointer mr-1"></i> Rê chuột để dừng
+      </div>
+    </div>
+  </div>
+
+  <div class="marquee-wrapper">
+    <div class="marquee-track">
+      <!-- Lượt 1 -->
+      @for (fb of feedbacks(); track fb.id) {
+        <div class="feedback-card">
+          <div class="feedback-header">
+            <div class="fb-avatar">{{ fb.initials }}</div>
+            <div class="fb-user">
+              <h4 class="fb-name">{{ fb.name }}</h4>
+              <div class="fb-stars">
+                @for (star of [1,2,3,4,5]; track star) {
+                  <i class="fa-solid fa-star text-gold"></i>
+                }
+                <span class="fb-date">{{ fb.date }}</span>
+              </div>
+            </div>
+          </div>
+          <p class="fb-comment">"{{ fb.comment }}"</p>
+          <div class="fb-badge">
+            <i class="fa-solid fa-check-circle mr-1 text-green"></i> Đã dùng: {{ fb.productName }}
+          </div>
+        </div>
+      }
+
+      <!-- Lượt 2 để lặp vô tận không giật -->
+      @for (fb of feedbacks(); track 'dup-' + fb.id) {
+        <div class="feedback-card" aria-hidden="true">
+          <div class="feedback-header">
+            <div class="fb-avatar">{{ fb.initials }}</div>
+            <div class="fb-user">
+              <h4 class="fb-name">{{ fb.name }}</h4>
+              <div class="fb-stars">
+                @for (star of [1,2,3,4,5]; track star) {
+                  <i class="fa-solid fa-star text-gold"></i>
+                }
+                <span class="fb-date">{{ fb.date }}</span>
+              </div>
+            </div>
+          </div>
+          <p class="fb-comment">"{{ fb.comment }}"</p>
+          <div class="fb-badge">
+            <i class="fa-solid fa-check-circle mr-1 text-green"></i> Đã dùng: {{ fb.productName }}
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

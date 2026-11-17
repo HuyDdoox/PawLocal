@@ -1,0 +1,142 @@
+:host {
+  display: block;
+}
+
+.admin-bookings-page {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.status-filters {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.filter-chip {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.filter-chip.active {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+.loading-box, .empty-box {
+  text-align: center;
+  padding: 32px 16px;
+  background: #ffffff;
+  border-radius: 12px;
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.empty-icon {
+  font-size: 2rem;
+  margin-bottom: 6px;
+  color: #cbd5e1;
+}
+
+.bookings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-booking-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.service-name {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.status-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.status-pending { background: #fef3c7; color: #b45309; }
+.status-confirmed { background: #dbeafe; color: #1d4ed8; }
+.status-completed { background: #d1fae5; color: #047857; }
+.status-cancelled { background: #fee2e2; color: #b91c1c; }
+
+.booking-details {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 0.8rem;
+  color: #334155;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.text-orange {
+  color: #f97316;
+}
+
+.booking-note {
+  font-style: italic;
+  color: #94a3b8;
+}
+
+.card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 10px;
+}
+
+.service-price {
+  font-size: 1.05rem;
+  color: #ea580c;
+  font-weight: 800;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-action {
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.btn-confirm { background: #f97316; color: #ffffff; }
+.btn-complete { background: #10b981; color: #ffffff; }
+.btn-cancel { background: #fee2e2; color: #ef4444; }

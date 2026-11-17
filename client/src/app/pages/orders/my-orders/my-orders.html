@@ -1,0 +1,56 @@
+<div class="orders-page">
+  <div class="page-header">
+    <h1 class="page-title">Đơn Hàng Của Tôi</h1>
+    <p class="page-desc">Theo dõi tiến độ đơn hàng thức ăn & phụ kiện</p>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-box">Đang tải danh sách đơn hàng...</div>
+  } @else if (orders().length === 0) {
+    <div class="empty-orders-card">
+      <i class="fa-solid fa-receipt empty-icon"></i>
+      <h3>Chưa có đơn hàng nào</h3>
+      <p>Bạn chưa đặt đơn hàng nào tại PawLocal. Khám phá ngay cửa hàng nhé!</p>
+      <a routerLink="/products" class="btn-shop">
+        <i class="fa-solid fa-bag-shopping mr-2"></i> Mua Sắm Ngay
+      </a>
+    </div>
+  } @else {
+    <div class="orders-list">
+      @for (order of orders(); track order._id) {
+        <div class="order-card">
+          <div class="order-card-header">
+            <span class="order-code">#{{ order._id.slice(-6).toUpperCase() }}</span>
+            <span class="order-status-badge status-{{ order.status }}">
+              {{ getStatusLabel(order.status) }}
+            </span>
+          </div>
+
+          <div class="order-date">
+            <i class="fa-regular fa-clock mr-1"></i> {{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}
+          </div>
+
+          <div class="order-items-preview">
+            @for (item of order.items; track item.name) {
+              <div class="preview-row">
+                <span class="p-qty">{{ item.quantity }}x</span>
+                <span class="p-name">{{ item.name }}</span>
+                <span class="p-price">{{ (item.price * item.quantity) | number:'1.0-0' }}đ</span>
+              </div>
+            }
+          </div>
+
+          <div class="order-card-footer">
+            <span class="ship-note">
+              {{ order.deliveryFee === 0 ? 'Freeship COD' : '+ 30,000đ Phí ship' }}
+            </span>
+            <div class="order-total-box">
+              <span class="total-lbl">Tổng:</span>
+              <span class="total-val">{{ order.total | number:'1.0-0' }}đ</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

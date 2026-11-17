@@ -1,0 +1,146 @@
+:host {
+  display: block;
+}
+
+.profile-page {
+  padding: 16px;
+}
+
+.profile-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #fff7ed;
+  border: 2px solid #fed7aa;
+  color: #ea580c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin: 0 auto 12px;
+}
+
+.profile-name {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.role-badge {
+  display: inline-block;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.role-badge.admin {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.profile-info-list {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.info-icon {
+  width: 24px;
+  font-size: 1rem;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.info-content label {
+  display: block;
+  font-size: 0.7rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.info-content span {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.profile-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.profile-nav-btn {
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #334155;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.profile-nav-btn:hover {
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+
+.admin-btn {
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+.text-orange {
+  color: #f97316;
+}
+
+.text-red {
+  color: #dc2626;
+}
+
+.btn-logout {
+  width: 100%;
+  padding: 11px;
+  background: #fef2f2;
+  color: #ef4444;
+  border: 1px solid #fee2e2;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-logout:hover {
+  background: #fee2e2;
+}

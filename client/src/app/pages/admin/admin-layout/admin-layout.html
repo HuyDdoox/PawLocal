@@ -1,0 +1,30 @@
+<div class="admin-wrapper">
+  <header class="admin-header">
+    <div class="admin-brand">
+      <i class="fa-solid fa-shield-halved shield-icon"></i>
+      <h2 class="admin-title">PawLocal <strong>Admin</strong></h2>
+    </div>
+    <a routerLink="/" class="btn-exit">
+      Về Cửa Hàng <i class="fa-solid fa-arrow-right ml-1"></i>
+    </a>
+  </header>
+
+  <nav class="admin-nav">
+    <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-tab">
+      <i class="fa-solid fa-chart-pie mr-1"></i> Tổng Quan
+    </a>
+    <a routerLink="/admin/orders" routerLinkActive="active" class="nav-tab">
+      <i class="fa-solid fa-box mr-1"></i> Đơn Hàng
+    </a>
+    <a routerLink="/admin/bookings" routerLinkActive="active" class="nav-tab">
+      <i class="fa-solid fa-calendar-check mr-1"></i> Lịch Spa
+    </a>
+    <a routerLink="/admin/products" routerLinkActive="active" class="nav-tab">
+      <i class="fa-solid fa-warehouse mr-1"></i> Kho Hàng
+    </a>
+  </nav>
+
+  <div class="admin-body">
+    <router-outlet />
+  </div>
+</div>

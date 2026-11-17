@@ -1,0 +1,29 @@
+<section class="section section-newsletter">
+  <div class="newsletter-card">
+    <div class="newsletter-icon">
+      <i class="fa-solid fa-gift"></i>
+    </div>
+    <h3 class="newsletter-title">Nhận Voucher Giảm 20%</h3>
+    <p class="newsletter-desc">Đăng ký email để nhận mã giảm giá cho đơn hàng đầu tiên và lịch spa miễn phí.</p>
+
+    @if (isSubscribed()) {
+      <div class="alert-success">
+        <i class="fa-solid fa-circle-check mr-1"></i> Mã voucher: <strong>PAW20</strong> đã gửi tới {{ email() }}!
+      </div>
+    } @else {
+      <form class="newsletter-form" (ngSubmit)="onSubmit()">
+        <input
+          type="email"
+          name="newsletterEmail"
+          [(ngModel)]="email"
+          placeholder="Nhập email của bạn..."
+          required
+          class="newsletter-input"
+        />
+        <button type="submit" class="newsletter-submit">
+          Đăng ký
+        </button>
+      </form>
+    }
+  </div>
+</section>

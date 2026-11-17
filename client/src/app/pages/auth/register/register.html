@@ -1,0 +1,99 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-icon-badge">
+        <i class="fa-solid fa-user-plus"></i>
+      </div>
+      <h1 class="auth-title">Đăng Ký Tài Khoản</h1>
+      <p class="auth-subtitle">Trở thành thành viên của cộng đồng PawLocal</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="alert-error">
+        <i class="fa-solid fa-circle-exclamation mr-1"></i> {{ errorMessage() }}
+      </div>
+    }
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <div class="form-group">
+        <label for="name">Họ và tên *</label>
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          placeholder="Ví dụ: Nguyễn Văn Khách"
+          class="form-control"
+          [class.invalid]="isFieldInvalid('name')"
+        />
+        @if (isFieldInvalid('name')) {
+          <span class="error-text">Họ tên tối thiểu 2 ký tự</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="example@pawlocal.com"
+          class="form-control"
+          [class.invalid]="isFieldInvalid('email')"
+        />
+        @if (isFieldInvalid('email')) {
+          <span class="error-text">Vui lòng nhập email hợp lệ</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mật khẩu *</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="Tối thiểu 6 ký tự"
+          class="form-control"
+          [class.invalid]="isFieldInvalid('password')"
+        />
+        @if (isFieldInvalid('password')) {
+          <span class="error-text">Mật khẩu tối thiểu 6 ký tự</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Số điện thoại</label>
+        <input
+          id="phone"
+          type="tel"
+          formControlName="phone"
+          placeholder="Ví dụ: 0988776655"
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="address">Địa chỉ</label>
+        <input
+          id="address"
+          type="text"
+          formControlName="address"
+          placeholder="Địa chỉ giao hàng mặc định"
+          class="form-control"
+        />
+      </div>
+
+      <button type="submit" class="btn-auth-submit" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang tạo tài khoản...
+        } @else {
+          <i class="fa-solid fa-check mr-2"></i> Hoàn Tất Đăng Ký
+        }
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <span>Đã có tài khoản?</span>
+      <a routerLink="/login" class="auth-switch-link">Đăng nhập ngay</a>
+    </div>
+  </div>
+</div>

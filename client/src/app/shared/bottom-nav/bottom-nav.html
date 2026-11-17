@@ -1,0 +1,33 @@
+<nav class="bottom-nav">
+  <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="bottom-nav-item">
+    <i class="fa-solid fa-house bottom-nav-icon"></i>
+    <span class="bottom-nav-label">Trang chủ</span>
+  </a>
+
+  <a routerLink="/products" routerLinkActive="active" class="bottom-nav-item">
+    <i class="fa-solid fa-bag-shopping bottom-nav-icon"></i>
+    <span class="bottom-nav-label">Cửa hàng</span>
+  </a>
+
+  <a routerLink="/booking" routerLinkActive="active" class="bottom-nav-item booking-highlight">
+    <div class="booking-circle">
+      <i class="fa-solid fa-scissors"></i>
+    </div>
+    <span class="bottom-nav-label">Đặt lịch</span>
+  </a>
+
+  <a routerLink="/cart" routerLinkActive="active" class="bottom-nav-item cart-item">
+    <div class="icon-wrap">
+      <i class="fa-solid fa-cart-shopping bottom-nav-icon"></i>
+      @if (productService.cartCount() > 0) {
+        <span class="cart-badge">{{ productService.cartCount() }}</span>
+      }
+    </div>
+    <span class="bottom-nav-label">Giỏ hàng</span>
+  </a>
+
+  <a [routerLink]="authService.isAuthenticated() ? '/profile' : '/login'" routerLinkActive="active" class="bottom-nav-item">
+    <i class="fa-regular fa-user bottom-nav-icon"></i>
+    <span class="bottom-nav-label">{{ authService.isAuthenticated() ? 'Cá nhân' : 'Đăng nhập' }}</span>
+  </a>
+</nav>

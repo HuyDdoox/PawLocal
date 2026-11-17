@@ -1,0 +1,115 @@
+<div class="pet-form-page">
+  <div class="page-top-nav">
+    <a routerLink="/pets" class="back-link">
+      <i class="fa-solid fa-arrow-left mr-2"></i> Danh sách thú cưng
+    </a>
+    <h1 class="page-title">{{ isEditMode() ? 'Chỉnh Sửa Hồ Sơ' : 'Thêm Thú Cưng Mới' }}</h1>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="alert-error">
+      <i class="fa-solid fa-triangle-exclamation mr-1"></i> {{ errorMessage() }}
+    </div>
+  }
+
+  <form [formGroup]="petForm" (ngSubmit)="onSubmit()" class="form-card">
+    <div class="form-group">
+      <label for="name">Tên bé cưng *</label>
+      <input
+        id="name"
+        type="text"
+        formControlName="name"
+        placeholder="Ví dụ: Milo, Bơ, Đậu Đậu..."
+        class="form-control"
+        [class.invalid]="isFieldInvalid('name')"
+      />
+      @if (isFieldInvalid('name')) {
+        <span class="error-text">Vui lòng nhập tên bé cưng</span>
+      }
+    </div>
+
+    <div class="form-group">
+      <label>Loài thú cưng *</label>
+      <div class="species-selector">
+        <button
+          type="button"
+          [class.active]="petForm.controls.species.value === 'dog'"
+          (click)="setSpecies('dog')"
+          class="species-btn"
+        >
+          <i class="fa-solid fa-dog mr-1"></i> Chó Cảnh
+        </button>
+        <button
+          type="button"
+          [class.active]="petForm.controls.species.value === 'cat'"
+          (click)="setSpecies('cat')"
+          class="species-btn"
+        >
+          <i class="fa-solid fa-cat mr-1"></i> Mèo Cảnh
+        </button>
+        <button
+          type="button"
+          [class.active]="petForm.controls.species.value === 'other'"
+          (click)="setSpecies('other')"
+          class="species-btn"
+        >
+          <i class="fa-solid fa-paw mr-1"></i> Khác
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="breed">Giống loài</label>
+      <input
+        id="breed"
+        type="text"
+        formControlName="breed"
+        placeholder="Ví dụ: Poodle, Corgi, Mèo Anh lông ngắn..."
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="weightKg">Cân nặng (kg)</label>
+        <input
+          id="weightKg"
+          type="number"
+          step="0.1"
+          formControlName="weightKg"
+          placeholder="Ví dụ: 4.5"
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="birthDate">Ngày sinh</label>
+        <input
+          id="birthDate"
+          type="date"
+          formControlName="birthDate"
+          class="form-control"
+        />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="notes">Ghi chú đặc biệt cho Spa</label>
+      <textarea
+        id="notes"
+        rows="3"
+        formControlName="notes"
+        placeholder="Ví dụ: Bé nhát nước, bị dị ứng dầu dừa..."
+        class="form-control"
+      ></textarea>
+    </div>
+
+    <button type="submit" class="btn-submit" [disabled]="isSubmitting()">
+      @if (isSubmitting()) {
+        <i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang lưu thông tin...
+      } @else {
+        <i class="fa-solid fa-check mr-2"></i> {{ isEditMode() ? 'Cập Nhật Hồ Sơ' : 'Lưu Hồ Sơ Bé Cưng' }}
+      }
+    </button>
+  </form>
+</div>

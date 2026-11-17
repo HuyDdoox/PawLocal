@@ -1,0 +1,45 @@
+<section class="section section-products">
+  <div class="section-header-row">
+    <div class="tabs-segmented">
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab() === 'featured'"
+        (click)="selectTab('featured')"
+      >
+        <i class="fa-solid fa-fire mr-1 text-orange"></i> Bán Chạy
+      </button>
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab() === 'sale'"
+        (click)="selectTab('sale')"
+      >
+        <i class="fa-solid fa-tags mr-1 text-red"></i> Giảm Giá Sâu
+      </button>
+    </div>
+
+    <a routerLink="/products" class="see-all-link">
+      Xem tất cả <i class="fa-solid fa-arrow-right ml-1"></i>
+    </a>
+  </div>
+
+  <div class="products-grid">
+    @for (p of displayedProducts(); track p.id || p._id) {
+      <app-product-card
+        [id]="p.id || 0"
+        [slug]="p.slug || ''"
+        [_id]="p._id || ''"
+        [name]="p.name"
+        [price]="p.price"
+        [image]="p.image"
+        [oldPrice]="p.oldPrice || 0"
+        [hot]="p.hot || false"
+        [stock]="p.stock || 0"
+        (add)="onAddToCart(p)"
+      />
+    } @empty {
+      <div class="empty-box">Đang tải sản phẩm từ hệ thống...</div>
+    }
+  </div>
+</section>

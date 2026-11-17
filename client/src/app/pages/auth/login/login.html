@@ -1,0 +1,71 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-icon-badge">
+        <i class="fa-solid fa-lock"></i>
+      </div>
+      <h1 class="auth-title">Đăng Nhập</h1>
+      <p class="auth-subtitle">Chào mừng bạn quay lại với PawLocal</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="alert-error">
+        <i class="fa-solid fa-circle-exclamation mr-1"></i> {{ errorMessage() }}
+      </div>
+    }
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <div class="form-group">
+        <label for="email">Email tài khoản *</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="example@pawlocal.com"
+          class="form-control"
+          [class.invalid]="isFieldInvalid('email')"
+        />
+        @if (isFieldInvalid('email')) {
+          <span class="error-text">Vui lòng nhập định dạng email hợp lệ</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mật khẩu *</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="Tối thiểu 6 ký tự"
+          class="form-control"
+          [class.invalid]="isFieldInvalid('password')"
+        />
+        @if (isFieldInvalid('password')) {
+          <span class="error-text">Mật khẩu tối thiểu 6 ký tự</span>
+        }
+      </div>
+
+      <button type="submit" class="btn-auth-submit" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang đăng nhập...
+        } @else {
+          <i class="fa-solid fa-arrow-right-to-bracket mr-2"></i> Đăng Nhập
+        }
+      </button>
+
+      <!-- Tài khoản demo nhanh -->
+      <div class="quick-demo-box">
+        <span class="demo-title">Nhập nhanh tài khoản mẫu:</span>
+        <div class="demo-buttons">
+          <button type="button" class="btn-demo" (click)="fillCustomer()">Khách hàng</button>
+          <button type="button" class="btn-demo admin" (click)="fillAdmin()">Quản trị viên</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="auth-footer">
+      <span>Chưa có tài khoản?</span>
+      <a routerLink="/register" class="auth-switch-link">Đăng ký ngay</a>
+    </div>
+  </div>
+</div>

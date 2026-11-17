@@ -1,0 +1,30 @@
+<section class="section section-hero">
+  <div class="hero-card">
+    <div class="hero-badge">
+      <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Ưu đãi chào mừng 2026
+    </div>
+    <h1 class="hero-title">{{ currentBanner().title }}</h1>
+    <p class="hero-desc">
+      {{ currentBanner().subtitle || 'Chăm sóc thú cưng tận tâm, sản phẩm chính hãng giao nhanh trong 2h.' }}
+    </p>
+
+    <!-- Ảnh Banner Thật -->
+    <div class="hero-img-wrap">
+      <img
+        [src]="currentBanner().image"
+        [alt]="currentBanner().title"
+        class="hero-img"
+        loading="eager"
+      />
+    </div>
+
+    <div class="hero-actions">
+      <a routerLink="/booking" class="btn btn-primary">
+        <i class="fa-solid fa-calendar-check mr-2"></i> Đặt lịch Spa ngay
+      </a>
+      <a routerLink="/products" class="btn btn-outline">
+        <i class="fa-solid fa-bag-shopping mr-2"></i> Mua sắm thức ăn
+      </a>
+    </div>
+  </div>
+</section>

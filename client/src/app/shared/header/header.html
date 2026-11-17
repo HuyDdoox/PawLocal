@@ -1,0 +1,124 @@
+<!-- HEADER -->
+<header class="app-header">
+  <div class="header-container">
+    <!-- Nút Menu Hamburger cho Mobile -->
+    <button class="mobile-toggle-btn" (click)="toggleMenu()" aria-label="Mở menu">
+      <i class="fa-solid fa-bars hamburger-icon"></i>
+    </button>
+
+    <!-- Logo thương hiệu -->
+    <a routerLink="/" class="logo" (click)="closeMenu()">
+      <div class="logo-badge">
+        <i class="fa-solid fa-paw"></i>
+      </div>
+      <span class="logo-text">Paw<span class="logo-accent">Local</span></span>
+    </a>
+
+    <!-- Menu điều hướng ngang Desktop -->
+    <nav class="desktop-nav">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-link">Trang chủ</a>
+      <a routerLink="/products" routerLinkActive="active" class="nav-link">Sản phẩm</a>
+      <a routerLink="/bai_viet" routerLinkActive="active" class="nav-link">Cẩm nang</a>
+      <a routerLink="/booking" routerLinkActive="active" class="nav-link">Đặt lịch Spa</a>
+      @if (authService.isAuthenticated()) {
+        <a routerLink="/pets" routerLinkActive="active" class="nav-link">Thú cưng</a>
+        <a routerLink="/my-orders" routerLinkActive="active" class="nav-link">Đơn hàng</a>
+      }
+      @if (authService.isAdmin()) {
+        <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link admin-link">
+          <i class="fa-solid fa-shield-halved mr-1"></i> Quản trị
+        </a>
+      }
+    </nav>
+
+    <!-- Nút thao tác góc phải -->
+    <div class="header-actions">
+      <!-- Nút Tìm kiếm nhanh -->
+      <a routerLink="/products" class="icon-btn search-btn" aria-label="Tìm kiếm" title="Tìm kiếm">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </a>
+
+      <!-- Nút Giỏ hàng có huy hiệu đếm -->
+      <a routerLink="/cart" class="icon-btn cart-btn" aria-label="Giỏ hàng" title="Giỏ hàng">
+        <i class="fa-solid fa-cart-shopping"></i>
+        @if (productService.cartCount() > 0) {
+          <span class="badge-count">{{ productService.cartCount() }}</span>
+        }
+      </a>
+
+      <!-- Nút Tài khoản (khi đã đăng nhập) -->
+      @if (authService.isAuthenticated()) {
+        <a routerLink="/profile" class="icon-btn profile-btn" title="Trang cá nhân">
+          <i class="fa-solid fa-user-check"></i>
+        </a>
+      }
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE MENU DRAWER (OFFCANVAS) -->
+<div class="drawer-overlay" [class.active]="isMenuOpen()" (click)="closeMenu()"></div>
+
+<aside class="drawer-menu" [class.active]="isMenuOpen()">
+  <div class="drawer-header">
+    <div class="logo">
+      <div class="logo-badge"><i class="fa-solid fa-paw"></i></div>
+      <span class="logo-text">Paw<span class="logo-accent">Local</span></span>
+    </div>
+    <button class="close-btn" (click)="closeMenu()" aria-label="Đóng menu">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  @if (authService.isAuthenticated()) {
+    <div class="drawer-user-info">
+      <div class="avatar-circle">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <div class="user-details">
+        <div class="user-name">{{ authService.currentUser()?.name }}</div>
+        <div class="user-role">{{ authService.currentUser()?.role === 'admin' ? 'Quản Trị Viên' : 'Khách Hàng' }}</div>
+      </div>
+    </div>
+  }
+
+  <nav class="drawer-nav">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()" class="drawer-link">
+      <i class="fa-solid fa-house"></i> Trang chủ
+    </a>
+    <a routerLink="/products" routerLinkActive="active" (click)="closeMenu()" class="drawer-link">
+      <i class="fa-solid fa-bag-shopping"></i> Cửa hàng sản phẩm
+    </a>
+    <a routerLink="/bai_viet" routerLinkActive="active" (click)="closeMenu()" class="drawer-link">
+      <i class="fa-solid fa-newspaper"></i> Cẩm nang thú cưng
+    </a>
+    <a routerLink="/booking" routerLinkActive="active" (click)="closeMenu()" class="drawer-link">
+      <i class="fa-solid fa-scissors"></i> Đặt lịch Spa & Grooming
+    </a>
+
+    @if (authService.isAuthenticated()) {
+      <a routerLink="/pets" routerLinkActive="active" (click)="closeMenu()" class="drawer-link">
+        <i class="fa-solid fa-shield-cat"></i> Hồ sơ thú cưng
+      </a>
+      <a routerLink="/my-orders" routerLinkActive="active" (click)="closeMenu()" class="drawer-link">
+        <i class="fa-solid fa-receipt"></i> Lịch sử đơn hàng
+      </a>
+      <a routerLink="/profile" routerLinkActive="active" (click)="closeMenu()" class="drawer-link">
+        <i class="fa-solid fa-id-card"></i> Thông tin tài khoản
+      </a>
+      @if (authService.isAdmin()) {
+        <a routerLink="/admin/dashboard" routerLinkActive="active" (click)="closeMenu()" class="drawer-link admin-highlight">
+          <i class="fa-solid fa-chart-pie"></i> Bảng điều khiển Admin
+        </a>
+      }
+      <button type="button" class="drawer-logout-btn" (click)="logout()">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất
+      </button>
+    } @else {
+      <div class="drawer-auth-buttons">
+        <a routerLink="/login" (click)="closeMenu()" class="btn-drawer-login">Đăng nhập</a>
+        <a routerLink="/register" (click)="closeMenu()" class="btn-drawer-register">Đăng ký tài khoản</a>
+      </div>
+    }
+  </nav>
+</aside>

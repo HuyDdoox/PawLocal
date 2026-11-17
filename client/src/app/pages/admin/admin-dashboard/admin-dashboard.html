@@ -1,0 +1,88 @@
+<div class="dashboard-page">
+  <div class="dash-top">
+    <div>
+      <h2 class="dash-title">Tổng Quan Hoạt Động</h2>
+      <p class="dash-sub">Báo cáo doanh số và tiến độ dịch vụ hôm nay</p>
+    </div>
+    <button type="button" class="btn-refresh" (click)="loadStats()">
+      <i class="fa-solid fa-rotate-right mr-1"></i> Làm mới
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-box">Đang tải thống kê KPI...</div>
+  } @else if (stats(); as s) {
+    <!-- 4 KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card revenue">
+        <div class="kpi-header">
+          <span class="kpi-label">Doanh Thu</span>
+          <i class="fa-solid fa-coins kpi-icon"></i>
+        </div>
+        <div class="kpi-val">{{ s.revenue | number:'1.0-0' }}đ</div>
+        <span class="kpi-sub">Đơn hàng hoàn tất</span>
+      </div>
+
+      <div class="kpi-card pending">
+        <div class="kpi-header">
+          <span class="kpi-label">Đơn Chờ Duyệt</span>
+          <i class="fa-solid fa-box-open kpi-icon"></i>
+        </div>
+        <div class="kpi-val">{{ s.pendingOrdersCount }}</div>
+        <a routerLink="/admin/orders" class="kpi-link">Xử lý ngay →</a>
+      </div>
+
+      <div class="kpi-card booking">
+        <div class="kpi-header">
+          <span class="kpi-label">Lịch Hẹn Nay</span>
+          <i class="fa-solid fa-calendar-day kpi-icon"></i>
+        </div>
+        <div class="kpi-val">{{ s.todayBookingsCount }}</div>
+        <a routerLink="/admin/bookings" class="kpi-link">Xem lịch →</a>
+      </div>
+
+      <div class="kpi-card stock" [class.alert]="s.lowStockProductsCount > 0">
+        <div class="kpi-header">
+          <span class="kpi-label">Tồn Kho Thấp</span>
+          <i class="fa-solid fa-triangle-exclamation kpi-icon"></i>
+        </div>
+        <div class="kpi-val">{{ s.lowStockProductsCount }}</div>
+        <a routerLink="/admin/products" class="kpi-link">Nhập hàng →</a>
+      </div>
+    </div>
+
+    <!-- Recent Activity Lists -->
+    <div class="activity-section">
+      <h3 class="section-heading">Đơn Hàng Mới Nhất</h3>
+      <div class="table-card">
+        @for (o of s.recentOrders; track o._id) {
+          <div class="activity-row">
+            <div>
+              <strong>#{{ o._id.slice(-6).toUpperCase() }}</strong>
+              <span class="text-sub"> • {{ o.items.length }} món</span>
+            </div>
+            <div>
+              <span class="status-pill status-{{ o.status }}">{{ getOrderStatusLabel(o.status) }}</span>
+              <strong class="row-price">{{ o.total | number:'1.0-0' }}đ</strong>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="activity-section">
+      <h3 class="section-heading">Lịch Spa Gần Đây</h3>
+      <div class="table-card">
+        @for (b of s.recentBookings; track b._id) {
+          <div class="activity-row">
+            <div>
+              <strong>{{ b.service?.name }}</strong>
+              <span class="text-sub"> • Bé {{ b.pet?.name }} ({{ b.timeSlot }})</span>
+            </div>
+            <span class="status-pill status-{{ b.status }}">{{ getBookingStatusLabel(b.status) }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

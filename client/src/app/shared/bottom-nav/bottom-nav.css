@@ -1,0 +1,94 @@
+:host {
+  display: block;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  height: 62px;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 1000;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: #64748b;
+  text-decoration: none;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color 0.15s ease;
+}
+
+.bottom-nav-icon {
+  font-size: 1.15rem;
+}
+
+.bottom-nav-item.active {
+  color: #f97316;
+}
+
+.icon-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 8px;
+  min-width: 16px;
+  text-align: center;
+}
+
+/* Central Floating Booking Button */
+.booking-highlight {
+  position: relative;
+  top: -12px;
+}
+
+.booking-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #f97316;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+  transition: transform 0.15s ease;
+}
+
+.booking-highlight:hover .booking-circle {
+  transform: scale(1.05);
+}
+
+.booking-highlight.active .booking-circle {
+  background: #ea580c;
+}

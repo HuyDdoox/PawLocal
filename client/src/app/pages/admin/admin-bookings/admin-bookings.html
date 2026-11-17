@@ -1,0 +1,94 @@
+<div class="admin-bookings-page">
+  <!-- Status Filters -->
+  <div class="status-filters">
+    <button
+      type="button"
+      [class.active]="selectedStatus() === 'all'"
+      (click)="filterStatus('all')"
+      class="filter-chip"
+    >
+      Tất cả
+    </button>
+    <button
+      type="button"
+      [class.active]="selectedStatus() === 'pending'"
+      (click)="filterStatus('pending')"
+      class="filter-chip"
+    >
+      Chờ duyệt
+    </button>
+    <button
+      type="button"
+      [class.active]="selectedStatus() === 'confirmed'"
+      (click)="filterStatus('confirmed')"
+      class="filter-chip"
+    >
+      Đã xác nhận
+    </button>
+    <button
+      type="button"
+      [class.active]="selectedStatus() === 'completed'"
+      (click)="filterStatus('completed')"
+      class="filter-chip"
+    >
+      Đã xong
+    </button>
+    <button
+      type="button"
+      [class.active]="selectedStatus() === 'cancelled'"
+      (click)="filterStatus('cancelled')"
+      class="filter-chip"
+    >
+      Đã hủy
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-box">Đang tải danh sách lịch Spa...</div>
+  } @else if (bookings().length === 0) {
+    <div class="empty-box">
+      <i class="fa-regular fa-calendar-xmark empty-icon"></i>
+      <p>Không có lịch hẹn nào ở mục này</p>
+    </div>
+  } @else {
+    <div class="bookings-list">
+      @for (b of bookings(); track b._id) {
+        <div class="admin-booking-card">
+          <div class="card-head">
+            <span class="service-name">{{ b.service?.name }}</span>
+            <span class="status-badge status-{{ b.status }}">
+              {{ getStatusLabel(b.status) }}
+            </span>
+          </div>
+
+          <div class="booking-details">
+            <p><i class="fa-solid fa-paw mr-1 text-orange"></i> Bé: <strong>{{ b.pet?.name }}</strong> ({{ b.pet?.species }})</p>
+            <p><i class="fa-regular fa-calendar mr-1 text-orange"></i> Ngày: <strong>{{ b.date }}</strong> lúc <strong>{{ b.timeSlot }}</strong></p>
+            @if (b.note) {
+              <p class="booking-note"><em>Ghi chú:</em> "{{ b.note }}"</p>
+            }
+          </div>
+
+          <div class="card-foot">
+            <strong class="service-price">{{ b.price | number:'1.0-0' }}đ</strong>
+
+            <div class="action-buttons">
+              @if (b.status === 'pending') {
+                <button type="button" class="btn-action btn-confirm" (click)="updateStatus(b._id, 'confirmed')">
+                  <i class="fa-solid fa-check mr-1"></i> Xác Nhận
+                </button>
+                <button type="button" class="btn-action btn-cancel" (click)="updateStatus(b._id, 'cancelled')">
+                  Hủy
+                </button>
+              } @else if (b.status === 'confirmed') {
+                <button type="button" class="btn-action btn-complete" (click)="updateStatus(b._id, 'completed')">
+                  <i class="fa-solid fa-circle-check mr-1"></i> Hoàn Thành Spa
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

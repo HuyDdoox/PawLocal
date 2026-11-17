@@ -1,0 +1,37 @@
+<div class="blogs-page">
+  <div class="page-header">
+    <h1 class="page-title">Cẩm Nang Chăm Sóc Thú Cưng</h1>
+    <p class="page-subtitle">Kiến thức dinh dưỡng, y tế và mẹo chăm sóc Boss từ chuyên gia PawLocal</p>
+  </div>
+
+  @if (blogService.loading()) {
+    <div class="loading-state">
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      <span>Đang tải bài viết...</span>
+    </div>
+  }
+
+  <div class="blog-list">
+    @for (blog of blogService.blogs(); track blog.id) {
+      <article class="blog-card" [routerLink]="['/bai_viet', blog.slug]">
+        <div class="blog-thumb">
+          <img [src]="blog.image" [alt]="blog.title" class="blog-img" loading="lazy" />
+          <span class="blog-tag">
+            <i class="fa-solid fa-paw mr-1"></i> Chăm sóc
+          </span>
+        </div>
+        <div class="blog-content">
+          <div class="blog-meta">
+            <span><i class="fa-solid fa-calendar mr-1"></i> {{ blog.date }}</span>
+            <span><i class="fa-solid fa-user-doctor mr-1"></i> {{ blog.author }}</span>
+          </div>
+          <h2 class="blog-title">{{ blog.title }}</h2>
+          <p class="blog-excerpt">{{ blog.excerpt }}</p>
+          <span class="read-more">
+            Đọc tiếp <i class="fa-solid fa-arrow-right ml-1"></i>
+          </span>
+        </div>
+      </article>
+    }
+  </div>
+</div>

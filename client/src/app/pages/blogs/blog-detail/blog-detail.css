@@ -1,0 +1,168 @@
+:host {
+  display: block;
+}
+
+.blog-detail-page {
+  padding: 16px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+  text-decoration: none;
+  margin-bottom: 16px;
+  transition: color 0.15s ease;
+}
+
+.back-link:hover {
+  color: #ea580c;
+}
+
+.article-box {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  padding: 18px;
+}
+
+.article-header {
+  margin-bottom: 16px;
+}
+
+.article-badge {
+  display: inline-flex;
+  align-items: center;
+  background: #fff7ed;
+  color: #ea580c;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.article-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.35;
+  margin-bottom: 10px;
+}
+
+.article-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  flex-wrap: wrap;
+}
+
+.article-thumb {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.article-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.article-excerpt-box {
+  background: #f8fafc;
+  border-left: 4px solid #f97316;
+  padding: 12px 14px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.article-excerpt {
+  font-size: 0.88rem;
+  font-style: italic;
+  color: #334155;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.article-content {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: #334155;
+  margin-bottom: 24px;
+}
+
+.article-content p {
+  margin-bottom: 14px;
+}
+
+.article-cta {
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+
+.cta-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #9a3412;
+  margin-bottom: 4px;
+}
+
+.cta-desc {
+  font-size: 0.8rem;
+  color: #7c2d12;
+  margin-bottom: 12px;
+}
+
+.btn-booking-now {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #f97316;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+  transition: background 0.15s ease;
+}
+
+.btn-booking-now:hover {
+  background: #ea580c;
+}
+
+.not-found-card {
+  text-align: center;
+  padding: 40px 16px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.not-found-icon {
+  font-size: 3rem;
+  color: #cbd5e1;
+  margin-bottom: 12px;
+}
+
+.btn-primary {
+  display: inline-block;
+  background: #f97316;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 12px;
+}

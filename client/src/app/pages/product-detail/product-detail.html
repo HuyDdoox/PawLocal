@@ -1,0 +1,113 @@
+<div class="detail-page">
+  <!-- Nút quay lại -->
+  <a routerLink="/products" class="back-link">
+    <i class="fa-solid fa-arrow-left mr-2"></i> Quay lại cửa hàng
+  </a>
+
+  @if (product(); as item) {
+    <div class="detail-card">
+      <!-- Ảnh sản phẩm -->
+      <div class="detail-img-wrap">
+        @if (item.hot) {
+          <span class="hot-badge">BÁN CHẠY</span>
+        }
+        <div class="img-box">
+          <i class="fa-solid fa-bone fallback-icon"></i>
+          <img [src]="item.image" [alt]="item.name" class="detail-img" (error)="$any($event.target).style.display='none'" />
+        </div>
+      </div>
+
+      <div class="detail-body">
+        <div class="detail-rating">
+          @for (s of [1,2,3,4,5]; track s) {
+            <i class="fa-solid fa-star star"></i>
+          }
+          <span class="rating-val">{{ item.rating || 4.9 }} / 5.0</span>
+          <span class="sold-count">• Đã bán 200+</span>
+        </div>
+
+        <h1 class="detail-title">{{ item.name }}</h1>
+
+        <!-- Giá bán -->
+        <div class="detail-price-row">
+          <span class="current-price">{{ item.price | number:'1.0-0' }}đ</span>
+          @if (item.oldPrice > item.price) {
+            <del class="old-price">{{ item.oldPrice | number:'1.0-0' }}đ</del>
+            <span class="discount-badge">
+              -{{ ((item.oldPrice - item.price) / item.oldPrice * 100) | number:'1.0-0' }}%
+            </span>
+          }
+        </div>
+
+        <!-- Trạng thái kho -->
+        <div class="stock-status">
+          @if (item.stock > 0) {
+            <span class="in-stock-tag">
+              <i class="fa-solid fa-circle-check mr-1"></i> Còn {{ item.stock }} sản phẩm trong kho
+            </span>
+          } @else {
+            <span class="out-stock-tag">
+              <i class="fa-solid fa-circle-xmark mr-1"></i> Tạm hết hàng
+            </span>
+          }
+        </div>
+
+        <!-- Mô tả -->
+        <div class="desc-box">
+          <h3 class="desc-heading">Mô tả sản phẩm</h3>
+          <p class="desc-text">{{ item.description }}</p>
+        </div>
+
+        <!-- Cam kết dịch vụ -->
+        <div class="commitments">
+          <div class="commit-item">
+            <i class="fa-solid fa-truck-fast commit-icon"></i>
+            <span>Giao nhanh 2h</span>
+          </div>
+          <div class="commit-item">
+            <i class="fa-solid fa-shield-halved commit-icon"></i>
+            <span>Chính hãng 100%</span>
+          </div>
+          <div class="commit-item">
+            <i class="fa-solid fa-rotate-left commit-icon"></i>
+            <span>Đổi trả 7 ngày</span>
+          </div>
+        </div>
+
+        @if (isAdded()) {
+          <div class="alert-added">
+            <i class="fa-solid fa-circle-check mr-1"></i> Đã thêm vào giỏ hàng thành công!
+          </div>
+        }
+
+        <!-- Bộ chọn số lượng & Thêm giỏ hàng -->
+        <div class="action-footer">
+          <div class="quantity-picker">
+            <button class="qty-btn" (click)="decreaseQty()" [disabled]="quantity() <= 1">−</button>
+            <span class="qty-val">{{ quantity() }}</span>
+            <button class="qty-btn" (click)="increaseQty()" [disabled]="quantity() >= item.stock">+</button>
+          </div>
+
+          <button
+            class="btn-add-cart-large"
+            [disabled]="item.stock === 0"
+            (click)="onAddToCart()"
+          >
+            @if (item.stock > 0) {
+              <i class="fa-solid fa-cart-plus mr-2"></i> Thêm vào giỏ hàng
+            } @else {
+              <i class="fa-solid fa-ban mr-2"></i> Hết hàng
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="not-found-card">
+      <i class="fa-solid fa-circle-question not-found-icon"></i>
+      <h2>Không tìm thấy sản phẩm!</h2>
+      <p>Sản phẩm này có thể đã bị gỡ hoặc không tồn tại.</p>
+      <a routerLink="/products" class="btn-primary">Xem các sản phẩm khác</a>
+    </div>
+  }
+</div>

@@ -1,0 +1,119 @@
+<div class="admin-orders-page">
+  <!-- Status Filters -->
+  <div class="status-filters">
+    <button
+      type="button"
+      [class.active]="selectedStatus() === 'all'"
+      (click)="filterStatus('all')"
+      class="filter-chip"
+    >
+      Tất cả
+    </button>
+    <button
+      type="button"
+      [class.active]="selectedStatus() === 'pending'"
+      (click)="filterStatus('pending')"
+      class="filter-chip"
+    >
+      Chờ duyệt
+    </button>
+    <button
+      type="button"
+      [class.active]="selectedStatus() === 'processing'"
+      (click)="filterStatus('processing')"
+      class="filter-chip"
+    >
+      Chuẩn bị
+    </button>
+    <button
+      type="button"
+      [class.active]="selectedStatus() === 'shipped'"
+      (click)="filterStatus('shipped')"
+      class="filter-chip"
+    >
+      Đang giao
+    </button>
+    <button
+      type="button"
+      [class.active]="selectedStatus() === 'completed'"
+      (click)="filterStatus('completed')"
+      class="filter-chip"
+    >
+      Hoàn thành
+    </button>
+    <button
+      type="button"
+      [class.active]="selectedStatus() === 'cancelled'"
+      (click)="filterStatus('cancelled')"
+      class="filter-chip"
+    >
+      Đã hủy
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-box">Đang tải danh sách đơn hàng...</div>
+  } @else if (orders().length === 0) {
+    <div class="empty-box">
+      <i class="fa-solid fa-box-open empty-icon"></i>
+      <p>Không có đơn hàng nào trong mục này</p>
+    </div>
+  } @else {
+    <div class="orders-list">
+      @for (order of orders(); track order._id) {
+        <div class="admin-order-card">
+          <div class="card-head">
+            <span class="order-id">#{{ order._id.slice(-6).toUpperCase() }}</span>
+            <span class="status-badge status-{{ order.status }}">
+              {{ getStatusLabel(order.status) }}
+            </span>
+          </div>
+
+          <div class="customer-info">
+            <p><strong>Người nhận:</strong> {{ order.shippingAddress?.recipientName }} ({{ order.shippingAddress?.phone }})</p>
+            <p><strong>Địa chỉ:</strong> {{ order.shippingAddress?.address }}</p>
+            @if (order.shippingAddress?.note) {
+              <p class="order-note"><em>Ghi chú:</em> "{{ order.shippingAddress?.note }}"</p>
+            }
+          </div>
+
+          <div class="items-summary">
+            @for (item of order.items; track item.name) {
+              <div class="item-line">
+                <span>{{ item.quantity }}x {{ item.name }}</span>
+                <span>{{ (item.price * item.quantity) | number:'1.0-0' }}đ</span>
+              </div>
+            }
+          </div>
+
+          <div class="card-foot">
+            <div class="total-wrap">
+              <span>Tổng thu COD:</span>
+              <strong class="total-price">{{ order.total | number:'1.0-0' }}đ</strong>
+            </div>
+
+            <!-- Action Buttons based on status -->
+            <div class="action-buttons">
+              @if (order.status === 'pending') {
+                <button type="button" class="btn-action btn-process" (click)="updateStatus(order._id, 'processing')">
+                  <i class="fa-solid fa-check mr-1"></i> Duyệt Đơn
+                </button>
+                <button type="button" class="btn-action btn-cancel" (click)="updateStatus(order._id, 'cancelled')">
+                  Hủy
+                </button>
+              } @else if (order.status === 'processing') {
+                <button type="button" class="btn-action btn-ship" (click)="updateStatus(order._id, 'shipped')">
+                  <i class="fa-solid fa-truck-fast mr-1"></i> Giao Hàng
+                </button>
+              } @else if (order.status === 'shipped') {
+                <button type="button" class="btn-action btn-complete" (click)="updateStatus(order._id, 'completed')">
+                  <i class="fa-solid fa-circle-check mr-1"></i> Đã Thu Tiền & Giao Xong
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

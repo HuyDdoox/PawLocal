@@ -1,0 +1,63 @@
+/* Global CSS Reset & Base Styling (No Tailwind) */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  overscroll-behavior-y: none;
+}
+
+html {
+  overflow-x: clip;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f1f5f9;
+  color: #0f172a;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+select {
+  cursor: pointer;
+  background-color: #ffffff;
+  color: #1e293b;
+}
+
+select option {
+  padding: 8px 12px;
+  background-color: #ffffff;
+  color: #1e293b;
+}
+
+/* Helpers & Container */
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.mr-1 { margin-right: 4px; }
+.mr-2 { margin-right: 8px; }
+.ml-1 { margin-left: 4px; }
+.ml-2 { margin-left: 8px; }
+.mt-1 { margin-top: 4px; }
+.mt-2 { margin-top: 8px; }
+.mb-1 { margin-bottom: 4px; }
+.mb-2 { margin-bottom: 8px; }

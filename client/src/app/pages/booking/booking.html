@@ -1,0 +1,206 @@
+<div class="booking-page">
+  <!-- Tabs Segmented -->
+  <div class="tabs-segmented">
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'book'"
+      (click)="activeTab.set('book')"
+    >
+      <i class="fa-solid fa-plus mr-1"></i> Đặt Lịch Mới
+    </button>
+
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'my-bookings'"
+      (click)="loadMyBookings(); activeTab.set('my-bookings')"
+    >
+      <i class="fa-regular fa-calendar-check mr-1"></i> Lịch Của Tôi
+    </button>
+  </div>
+
+  <!-- TAB 1: BOOKING FLOW -->
+  @if (activeTab() === 'book') {
+    @if (isInitialLoading()) {
+      <div class="loading-box">Đang tải thông tin dịch vụ & thú cưng...</div>
+    } @else if (pets().length === 0) {
+      <div class="empty-pets-card">
+        <i class="fa-solid fa-shield-cat empty-icon"></i>
+        <h3>Chưa có hồ sơ thú cưng</h3>
+        <p>Vui lòng thêm thông tin bé cưng của bạn trước khi đặt lịch Grooming nhé!</p>
+        <a routerLink="/pets/new" class="btn-primary">
+          <i class="fa-solid fa-plus mr-1"></i> Thêm Thú Cưng Ngay
+        </a>
+      </div>
+    } @else {
+      <div class="booking-form-card">
+        @if (errorMessage()) {
+          <div class="alert-error">
+            <i class="fa-solid fa-triangle-exclamation mr-1"></i> {{ errorMessage() }}
+          </div>
+        }
+
+        <!-- Bước 1: Chọn Thú Cưng -->
+        <div class="step-group">
+          <label class="step-label">1. Chọn Thú Cưng</label>
+          <div class="pet-chips">
+            @for (p of pets(); track p._id) {
+              <button
+                type="button"
+                class="chip-btn"
+                [class.selected]="selectedPetId() === p._id"
+                (click)="onPetSelect(p._id)"
+              >
+                <i class="fa-solid" [class.fa-dog]="p.species === 'dog'" [class.fa-cat]="p.species === 'cat'"></i>
+                <span>{{ p.name }}</span>
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Bước 2: Chọn Gói Dịch Vụ -->
+        <div class="step-group">
+          <label class="step-label">2. Chọn Gói Dịch Vụ Spa</label>
+          <div class="service-cards-group">
+            @for (s of services(); track s._id) {
+              <div
+                class="service-select-item"
+                [class.selected]="selectedServiceId() === s._id"
+                (click)="onServiceSelect(s._id)"
+              >
+                <div class="radio-circle">
+                  <div class="radio-inner" [class.active]="selectedServiceId() === s._id"></div>
+                </div>
+                <div class="item-info">
+                  <div class="item-title">{{ s.name }}</div>
+                  <div class="item-sub">{{ s.description }}</div>
+                  <div class="item-meta">
+                    <strong class="item-price">{{ s.basePrice | number:'1.0-0' }}đ</strong>
+                    <span class="item-duration">• {{ s.durationMinutes }} phút</span>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Bước 3: Chọn Ngày -->
+        <div class="step-group">
+          <label class="step-label">3. Chọn Ngày Hẹn</label>
+          <div class="days-row">
+            @for (d of availableDays; track d.dateStr) {
+              <button
+                type="button"
+                class="day-btn"
+                [class.selected]="selectedDate() === d.dateStr"
+                (click)="onDateSelect(d.dateStr)"
+              >
+                <span class="day-dow">{{ d.dayOfWeek }}</span>
+                <span class="day-label">{{ d.label }}</span>
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Bước 4: Chọn Khung Giờ -->
+        <div class="step-group">
+          <div class="step-label-row">
+            <label class="step-label">4. Chọn Khung Giờ</label>
+            @if (isLoadingSlots()) {
+              <span class="slot-loading">Kiểm tra khung giờ trống...</span>
+            }
+          </div>
+
+          <div class="slots-grid">
+            @for (slot of allSlots; track slot) {
+              <button
+                type="button"
+                class="slot-btn"
+                [class.booked]="isSlotBooked(slot)"
+                [class.selected]="selectedTimeSlot() === slot"
+                [disabled]="isSlotBooked(slot)"
+                (click)="onSlotSelect(slot)"
+              >
+                <span>{{ slot }}</span>
+                @if (isSlotBooked(slot)) {
+                  <span class="booked-tag">Hết chỗ</span>
+                }
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Bước 5: Ghi Chú -->
+        <div class="step-group">
+          <label class="step-label">Ghi Chú Cho Kỹ Thuật Viên</label>
+          <input
+            type="text"
+            [(ngModel)]="note"
+            placeholder="Ví dụ: Bé nhát nước, xin vui lòng nhẹ tay..."
+            class="note-input"
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="button"
+          class="btn-confirm-booking"
+          [disabled]="!selectedPetId() || !selectedServiceId() || !selectedDate() || !selectedTimeSlot() || isSubmitting()"
+          (click)="submitBooking()"
+        >
+          @if (isSubmitting()) {
+            <i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang xử lý...
+          } @else {
+            <i class="fa-solid fa-calendar-check mr-2"></i>
+            Xác Nhận Đặt Lịch ({{ getSelectedServicePrice() | number:'1.0-0' }}đ)
+          }
+        </button>
+      </div>
+    }
+  }
+
+  <!-- TAB 2: MY BOOKINGS -->
+  @if (activeTab() === 'my-bookings') {
+    @if (isLoadingBookings()) {
+      <div class="loading-box">Đang tải lịch hẹn...</div>
+    } @else if (myBookings().length === 0) {
+      <div class="empty-pets-card">
+        <i class="fa-regular fa-calendar-xmark empty-icon"></i>
+        <h3>Chưa có lịch hẹn nào</h3>
+        <p>Bạn chưa đặt lịch hẹn Spa nào. Hãy đặt ngay để Boss luôn thơm tho sạch đẹp nhé!</p>
+        <button type="button" class="btn-primary" (click)="activeTab.set('book')">
+          <i class="fa-solid fa-calendar-plus mr-1"></i> Đặt Lịch Ngay
+        </button>
+      </div>
+    } @else {
+      <div class="bookings-list">
+        @for (b of myBookings(); track b._id) {
+          <div class="booking-item-card">
+            <div class="booking-item-header">
+              <h4 class="b-service-name">{{ b.service?.name }}</h4>
+              <span class="b-status-pill status-{{ b.status }}">
+                {{ getStatusLabel(b.status) }}
+              </span>
+            </div>
+
+            <div class="booking-item-body">
+              <div class="b-row"><i class="fa-solid fa-paw mr-2 text-orange"></i> Bé: <strong>{{ b.pet?.name }}</strong> ({{ b.pet?.breed || 'Thú cưng' }})</div>
+              <div class="b-row"><i class="fa-regular fa-calendar mr-2 text-orange"></i> Ngày: <strong>{{ b.date }}</strong> lúc <strong>{{ b.timeSlot }}</strong></div>
+              @if (b.note) {
+                <div class="b-note">"{{ b.note }}"</div>
+              }
+            </div>
+
+            <div class="booking-item-footer">
+              <span class="b-price">{{ b.price | number:'1.0-0' }}đ</span>
+              @if (b.status === 'pending' || b.status === 'confirmed') {
+                <button type="button" class="btn-cancel" (click)="cancelBooking(b._id)">Hủy Lịch</button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

@@ -1,0 +1,45 @@
+<article class="product-card" [routerLink]="routeTarget()">
+  <div class="product-thumb">
+    @if (hot()) {
+      <span class="hot-badge">HOT</span>
+    }
+    @if (discountPercent() > 0) {
+      <span class="discount-badge">-{{ discountPercent() }}%</span>
+    }
+    <div class="product-img-box">
+      <!-- Fallback pet icon if image fails or generic -->
+      <i class="fa-solid fa-bone product-fallback-icon"></i>
+      <img [src]="image()" [alt]="name()" class="product-img" loading="lazy" (error)="$any($event.target).style.display='none'" />
+    </div>
+  </div>
+
+  <div class="product-info">
+    <h3 class="product-title">{{ name() }}</h3>
+
+    <div class="product-price-box">
+      <strong class="product-price">{{ price() | number:'1.0-0' }}đ</strong>
+      @if (oldPrice() > price()) {
+        <del class="old-price">{{ oldPrice() | number:'1.0-0' }}đ</del>
+      }
+    </div>
+
+    @if (stock() > 0) {
+      <p class="in-stock">Còn {{ stock() }} sản phẩm</p>
+    } @else {
+      <p class="out-stock">Hết hàng</p>
+    }
+
+    <button
+      type="button"
+      class="btn-add-cart"
+      [disabled]="stock() === 0"
+      (click)="addToCart($event)"
+    >
+      @if (stock() > 0) {
+        <i class="fa-solid fa-cart-plus mr-1"></i> Thêm vào giỏ
+      } @else {
+        <i class="fa-solid fa-ban mr-1"></i> Hết hàng
+      }
+    </button>
+  </div>
+</article>

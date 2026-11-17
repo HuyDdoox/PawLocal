@@ -1,0 +1,129 @@
+<div class="products-page">
+  <!-- Tiêu đề trang -->
+  <div class="page-header">
+    <h1 class="page-title">Cửa Hàng Thú Cưng</h1>
+    <p class="page-desc">Thức ăn, phụ kiện & đồ chơi chính hãng cho Boss</p>
+  </div>
+
+  <!-- Thanh tìm kiếm -->
+  <div class="search-box">
+    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+    <input
+      class="search-input"
+      type="search"
+      placeholder="Tìm thức ăn, pate, đồ chơi..."
+      [value]="keyword()"
+      (input)="onSearch($event)"
+    />
+    @if (keyword()) {
+      <button type="button" class="clear-search-btn" (click)="keyword.set('')" aria-label="Xóa tìm kiếm">✕</button>
+    }
+  </div>
+
+  <!-- KHỐI BỘ LỌC CỐ ĐỊNH KHI CUỘN (STICKY TOP DƯỚI HEADER) -->
+  <div class="sticky-filter-bar">
+    <!-- Thanh danh mục cuộn ngang dạng Chip (Mobile Horizontal Pills) -->
+    <div class="category-scroll-container">
+      <div class="category-pills">
+        <button
+          type="button"
+          class="pill-btn"
+          [class.active]="!categorySlug() || categorySlug() === 'tat-ca'"
+          (click)="selectCategory('')"
+        >
+          <i class="fa-solid fa-border-all pill-icon"></i>
+          <span>Tất cả ({{ productService.products().length }})</span>
+        </button>
+
+        @for (cat of productService.categories(); track cat.id) {
+          <button
+            type="button"
+            class="pill-btn"
+            [class.active]="categorySlug() === cat.slug"
+            (click)="selectCategory(cat.slug)"
+          >
+            <i [class]="(cat.icon || 'fa-solid fa-paw') + ' pill-icon'"></i>
+            <span>{{ cat.name }}</span>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Thanh Sắp Xếp & Đếm Kết Quả (Fit 100% Mobile) -->
+    <div class="sort-toolbar">
+      <div class="result-count">
+        Tìm thấy <strong>{{ filteredProducts().length }}</strong> sản phẩm
+      </div>
+
+      <div class="sort-controls">
+        <!-- Custom Select Dropdown UI (Không dùng native select xấu) -->
+        <div class="custom-dropdown">
+          <button
+            type="button"
+            class="dropdown-trigger"
+            [class.open]="isSortOpen()"
+            (click)="toggleSortDropdown($event)"
+            aria-haspopup="listbox"
+            [attr.aria-expanded]="isSortOpen()"
+          >
+            <i class="fa-solid fa-arrow-down-wide-short sort-icon"></i>
+            <span class="selected-label">{{ currentSortLabel() }}</span>
+            <i class="fa-solid fa-chevron-down arrow-icon" [class.rotated]="isSortOpen()"></i>
+          </button>
+
+          @if (isSortOpen()) {
+            <!-- Lớp phủ tàng hình để bấm ra ngoài thì tự đóng -->
+            <div class="dropdown-backdrop" (click)="closeSortDropdown()"></div>
+
+            <ul class="dropdown-menu" role="listbox">
+              @for (opt of sortOptions; track opt.value) {
+                <li
+                  role="option"
+                  class="dropdown-item"
+                  [class.active]="sortBy() === opt.value"
+                  (click)="onSelectSort(opt.value)"
+                >
+                  <span class="item-text">{{ opt.label }}</span>
+                  @if (sortBy() === opt.value) {
+                    <i class="fa-solid fa-check check-icon"></i>
+                  }
+                </li>
+              }
+            </ul>
+          }
+        </div>
+
+        @if (keyword() || categorySlug() || sortBy() !== 'default') {
+          <button type="button" class="reset-chip" (click)="resetFilters()" title="Xóa tất cả bộ lọc">
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Lưới sản phẩm 2 cột tối ưu cho điện thoại -->
+  <div class="product-grid">
+    @for (item of filteredProducts(); track item.id || item._id) {
+      <app-product-card
+        [id]="item.id || 0"
+        [slug]="item.slug || ''"
+        [_id]="item._id || ''"
+        [name]="item.name"
+        [price]="item.price"
+        [image]="item.image"
+        [oldPrice]="item.oldPrice || 0"
+        [hot]="item.hot || false"
+        [stock]="item.stock || 0"
+        (add)="onAddToCart(item)"
+      />
+    } @empty {
+      <div class="empty-state">
+        <i class="fa-solid fa-box-open empty-icon"></i>
+        <h3>Không tìm thấy sản phẩm nào</h3>
+        <p>Vui lòng thử lại với từ khóa hoặc danh mục khác</p>
+        <button type="button" class="btn-reset" (click)="resetFilters()">Xem tất cả sản phẩm</button>
+      </div>
+    }
+  </div>
+</div>

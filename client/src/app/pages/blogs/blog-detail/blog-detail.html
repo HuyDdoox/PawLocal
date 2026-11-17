@@ -1,0 +1,49 @@
+<div class="blog-detail-page">
+  <a routerLink="/bai_viet" class="back-link">
+    <i class="fa-solid fa-arrow-left mr-2"></i> Quay lại cẩm nang
+  </a>
+
+  @if (blog(); as item) {
+    <article class="article-box">
+      <div class="article-header">
+        <span class="article-badge">
+          <i class="fa-solid fa-shield-cat mr-1"></i> Kiến thức thú cưng
+        </span>
+        <h1 class="article-title">{{ item.title }}</h1>
+        <div class="article-meta">
+          <span><i class="fa-solid fa-calendar mr-1"></i> {{ item.date }}</span>
+          <span><i class="fa-solid fa-user-doctor mr-1"></i> {{ item.author }}</span>
+          <span><i class="fa-solid fa-eye mr-1"></i> {{ item.views || 300 }} lượt đọc</span>
+        </div>
+      </div>
+
+      <div class="article-thumb">
+        <img [src]="item.image" [alt]="item.title" class="article-img" />
+      </div>
+
+      <div class="article-excerpt-box">
+        <p class="article-excerpt">{{ item.excerpt }}</p>
+      </div>
+
+      <div class="article-content">
+        <p>{{ item.content }}</p>
+        <p>PawLocal khuyến cáo ba mẹ luôn chú ý biểu hiện ăn uống, thói quen đi vệ sinh và tính tình hằng ngày của bé cưng để phát hiện sớm các dấu hiệu bất thường. Nếu có bất kỳ thắc mắc nào, đừng ngần ngại liên hệ đội ngũ chuyên gia của chúng tôi!</p>
+      </div>
+
+      <div class="article-cta">
+        <div class="cta-title">Cần tư vấn chăm sóc hoặc đặt lịch Spa?</div>
+        <p class="cta-desc">Đặt lịch ngay hôm nay để nhận ưu đãi giảm 25% cho bé cưng.</p>
+        <a routerLink="/booking" class="btn-booking-now">
+          <i class="fa-solid fa-calendar-check mr-2"></i> Đặt lịch Spa ngay
+        </a>
+      </div>
+    </article>
+  } @else {
+    <div class="not-found-card">
+      <i class="fa-solid fa-circle-question not-found-icon"></i>
+      <h2>Không tìm thấy bài viết!</h2>
+      <p>Bài viết này có thể đã được cập nhật đường dẫn hoặc không tồn tại.</p>
+      <a routerLink="/bai_viet" class="btn-primary">Xem danh sách bài viết</a>
+    </div>
+  }
+</div>

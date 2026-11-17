@@ -1,0 +1,85 @@
+<div class="admin-products-page">
+  <div class="top-row">
+    <h3>Kho Hàng ({{ products().length }})</h3>
+    <button type="button" (click)="toggleAddForm()" class="btn-toggle-add">
+      <i class="fa-solid" [class.fa-plus]="!showAddForm()" [class.fa-xmark]="showAddForm()"></i>
+      {{ showAddForm() ? ' Đóng' : ' Thêm Sản Phẩm' }}
+    </button>
+  </div>
+
+  @if (showAddForm()) {
+    <form [formGroup]="productForm" (ngSubmit)="onCreateProduct()" class="add-form">
+      <h4>Thêm Sản Phẩm Mới</h4>
+
+      <div class="form-group">
+        <label>Tên sản phẩm *</label>
+        <input type="text" formControlName="name" placeholder="Ví dụ: Hạt Royal Canin Puppy" class="form-control" />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Giá bán (VNĐ) *</label>
+          <input type="number" formControlName="price" placeholder="150000" class="form-control" />
+        </div>
+
+        <div class="form-group">
+          <label>Số lượng kho *</label>
+          <input type="number" formControlName="stock" placeholder="20" class="form-control" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Danh mục *</label>
+        <select formControlName="category" class="form-control">
+          <option value="" disabled>-- Chọn danh mục --</option>
+          @for (cat of categories(); track cat._id || cat.id) {
+            <option [value]="cat._id">{{ cat.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Mô tả</label>
+        <textarea formControlName="description" rows="2" placeholder="Thông tin chi tiết..." class="form-control"></textarea>
+      </div>
+
+      <button type="submit" [disabled]="productForm.invalid || isSubmitting()" class="btn-save-prod">
+        {{ isSubmitting() ? 'Đang lưu...' : 'Lưu Sản Phẩm' }}
+      </button>
+    </form>
+  }
+
+  @if (isLoading()) {
+    <div class="loading-box">Đang tải danh sách kho hàng...</div>
+  } @else {
+    <div class="products-list">
+      @for (p of products(); track p._id || p.id) {
+        <div class="admin-prod-card" [class.disabled-item]="!p.isAvailable">
+          <div class="prod-thumb">
+            <i class="fa-solid fa-bone prod-icon"></i>
+            <img [src]="p.image" [alt]="p.name" class="prod-img" (error)="$any($event.target).style.display='none'" />
+          </div>
+
+          <div class="prod-info">
+            <div class="prod-name">{{ p.name }}</div>
+            <div class="prod-price">{{ p.price | number:'1.0-0' }}đ</div>
+            <div class="prod-stock" [class.low]="p.stock <= 5">
+              Kho: <strong>{{ p.stock }}</strong> món
+            </div>
+          </div>
+
+          <div class="prod-actions">
+            <button
+              type="button"
+              class="btn-toggle-stock"
+              [class.active]="p.isAvailable"
+              (click)="toggleAvailability(p)"
+            >
+              {{ p.isAvailable ? 'Đang Bán' : 'Tạm Ẩn' }}
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,19 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  max-width: 480px;
+  /* Khung Mobile-first cố định theo yêu cầu Asm 1 & Lab */
+  margin: 0 auto;
+  background-color: #ffffff;
+  box-shadow: 0 0 32px rgba(15, 23, 42, 0.08);
+  position: relative;
+  /* Chừa khoảng trống dưới cùng để không bị che bởi Bottom Nav */
+  padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+}
+
+.app-main {
+  flex: 1;
+}

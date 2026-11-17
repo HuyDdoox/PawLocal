@@ -1,0 +1,49 @@
+<section class="section section-services">
+  <div class="section-header-wrap">
+    <div>
+      <div class="badge-service">
+        <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Spa & Grooming 5 Sao
+      </div>
+      <h2 class="section-title">Dịch Vụ Chăm Sóc Boss Yêu</h2>
+      <p class="section-sub">Đội ngũ kỹ thuật viên tay nghề cao, phòng spa tiệt trùng 100%</p>
+    </div>
+    <div class="swipe-hint">
+      <span>Vuốt xem thêm</span>
+      <i class="fa-solid fa-arrow-right-long ml-1"></i>
+    </div>
+  </div>
+
+  <!-- Thanh cuộn ngang dịch vụ (Horizontal Touch Slider) -->
+  <div class="services-scroll-wrap">
+    <div class="services-track">
+      @for (s of productService.services(); track s._id || s.name) {
+        <div class="service-card">
+          <div class="card-top-row">
+            <div class="service-icon-box">
+              <i [class]="getServiceIcon(s.name)"></i>
+            </div>
+            <span class="card-badge">{{ getServiceBadge(s.name) }}</span>
+          </div>
+
+          <div class="service-body">
+            <h3 class="service-name">{{ s.name }}</h3>
+            <p class="service-desc">{{ s.description }}</p>
+          </div>
+
+          <div class="service-footer">
+            <div class="price-box">
+              <span class="service-price">{{ s.basePrice | number:'1.0-0' }}đ</span>
+              <span class="service-duration">
+                <i class="fa-regular fa-clock mr-1"></i> {{ s.durationMinutes }} phút
+              </span>
+            </div>
+
+            <a routerLink="/booking" class="btn-book-service">
+              <i class="fa-solid fa-calendar-check mr-1"></i> Đặt lịch
+            </a>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

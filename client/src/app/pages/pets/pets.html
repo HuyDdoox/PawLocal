@@ -1,0 +1,56 @@
+<div class="pets-page">
+  <div class="page-header-row">
+    <div>
+      <h1 class="page-title">Hồ Sơ Thú Cưng</h1>
+      <p class="page-desc">Quản lý và đặt lịch Spa cho các bé yêu</p>
+    </div>
+    <a routerLink="/pets/new" class="btn-add-pet">
+      <i class="fa-solid fa-plus mr-1"></i> Thêm Bé
+    </a>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-box">Đang tải hồ sơ các bé...</div>
+  } @else if (pets().length === 0) {
+    <div class="empty-pets-card">
+      <i class="fa-solid fa-shield-cat empty-icon"></i>
+      <h3>Chưa có hồ sơ thú cưng</h3>
+      <p>Thêm thông tin bé cưng để đặt lịch làm đẹp và chăm sóc tốt nhất.</p>
+      <a routerLink="/pets/new" class="btn-primary">
+        <i class="fa-solid fa-plus mr-1"></i> Tạo Hồ Sơ Thú Cưng
+      </a>
+    </div>
+  } @else {
+    <div class="pets-list">
+      @for (pet of pets(); track pet._id) {
+        <div class="pet-card">
+          <div class="pet-avatar-box">
+            <i class="fa-solid" [class.fa-dog]="pet.species === 'dog'" [class.fa-cat]="pet.species === 'cat'"></i>
+          </div>
+
+          <div class="pet-info">
+            <div class="pet-title-row">
+              <h3 class="pet-name">{{ pet.name }}</h3>
+              <span class="pet-species-badge">
+                {{ pet.species === 'dog' ? 'Chó' : (pet.species === 'cat' ? 'Mèo' : 'Khác') }}
+              </span>
+            </div>
+            <p class="pet-sub">{{ pet.breed || 'Chưa rõ giống' }} • {{ pet.weightKg || '?' }} kg</p>
+            @if (pet.notes) {
+              <p class="pet-notes">"{{ pet.notes }}"</p>
+            }
+          </div>
+
+          <div class="pet-actions">
+            <a [routerLink]="['/booking']" [queryParams]="{ petId: pet._id }" class="btn-book-slot" title="Đặt lịch">
+              <i class="fa-solid fa-calendar-check"></i>
+            </a>
+            <button type="button" class="btn-del-pet" (click)="deletePet(pet._id)" title="Xóa">
+              <i class="fa-regular fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,55 @@
+<div class="profile-page">
+  <div class="profile-card">
+    <div class="profile-avatar">
+      <i class="fa-solid fa-user"></i>
+    </div>
+    <h2 class="profile-name">{{ authService.currentUser()?.name }}</h2>
+    <span class="role-badge" [class.admin]="authService.isAdmin()">
+      {{ authService.isAdmin() ? 'Quản Trị Viên' : 'Khách Hàng Thân Thiết' }}
+    </span>
+
+    <div class="profile-info-list">
+      <div class="info-item">
+        <i class="fa-solid fa-envelope info-icon"></i>
+        <div class="info-content">
+          <label>Email</label>
+          <span>{{ authService.currentUser()?.email }}</span>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <i class="fa-solid fa-phone info-icon"></i>
+        <div class="info-content">
+          <label>Số điện thoại</label>
+          <span>{{ authService.currentUser()?.phone || 'Chưa cập nhật' }}</span>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <i class="fa-solid fa-location-dot info-icon"></i>
+        <div class="info-content">
+          <label>Địa chỉ</label>
+          <span>{{ authService.currentUser()?.address || 'Chưa cập nhật' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-links">
+      <a routerLink="/pets" class="profile-nav-btn">
+        <i class="fa-solid fa-shield-cat mr-2 text-orange"></i> Quản lý thú cưng của tôi
+      </a>
+      <a routerLink="/my-orders" class="profile-nav-btn">
+        <i class="fa-solid fa-receipt mr-2 text-orange"></i> Xem lịch sử đơn hàng
+      </a>
+      @if (authService.isAdmin()) {
+        <a routerLink="/admin/dashboard" class="profile-nav-btn admin-btn">
+          <i class="fa-solid fa-chart-pie mr-2 text-red"></i> Bảng điều khiển Quản trị
+        </a>
+      }
+    </div>
+
+    <button type="button" class="btn-logout" (click)="logout()">
+      <i class="fa-solid fa-arrow-right-from-bracket mr-2"></i> Đăng Xuất
+    </button>
+  </div>
+</div>

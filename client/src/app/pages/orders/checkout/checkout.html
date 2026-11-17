@@ -1,0 +1,115 @@
+<div class="checkout-page">
+  <div class="page-top-nav">
+    <a routerLink="/cart" class="back-link">
+      <i class="fa-solid fa-arrow-left mr-2"></i> Quay lại giỏ hàng
+    </a>
+    <h1 class="page-title">Xác Nhận Đơn Hàng</h1>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="alert-error">
+      <i class="fa-solid fa-triangle-exclamation mr-1"></i> {{ errorMessage() }}
+    </div>
+  }
+
+  <!-- Tóm tắt sản phẩm -->
+  <div class="card-section">
+    <h3 class="card-title">Sản phẩm trong đơn ({{ productService.cartCount() }})</h3>
+    <div class="items-summary-list">
+      @for (item of productService.cart(); track item.product.id || item.product._id) {
+        <div class="summary-item">
+          <span class="item-qty">{{ item.quantity }}x</span>
+          <span class="item-name">{{ item.product.name }}</span>
+          <span class="item-price">{{ (item.product.price * item.quantity) | number:'1.0-0' }}đ</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Form giao hàng -->
+  <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()" class="checkout-form">
+    <div class="card-section">
+      <h3 class="card-title">Địa Chỉ Giao Hàng (COD)</h3>
+
+      <div class="form-group">
+        <label for="recipientName">Họ và tên người nhận *</label>
+        <input
+          id="recipientName"
+          type="text"
+          formControlName="recipientName"
+          placeholder="Ví dụ: Nguyễn Văn Khách"
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Số điện thoại liên hệ *</label>
+        <input
+          id="phone"
+          type="tel"
+          formControlName="phone"
+          placeholder="Ví dụ: 0988776655"
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="address">Địa chỉ chi tiết *</label>
+        <input
+          id="address"
+          type="text"
+          formControlName="address"
+          placeholder="Số nhà, tên đường, phường/xã, quận/huyện..."
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="note">Ghi chú giao hàng</label>
+        <input
+          id="note"
+          type="text"
+          formControlName="note"
+          placeholder="Ví dụ: Giao giờ hành chính, gọi trước khi đến..."
+          class="form-control"
+        />
+      </div>
+    </div>
+
+    <!-- Thanh toán -->
+    <div class="card-section">
+      <h3 class="card-title">Phương Thức Thanh Toán</h3>
+      <div class="cod-option">
+        <i class="fa-solid fa-money-bill-wave cod-icon"></i>
+        <div class="cod-info">
+          <strong>Thanh toán tiền mặt khi nhận hàng (COD)</strong>
+          <p>Kiểm tra hàng trước khi thanh toán cho nhân viên giao vận</p>
+        </div>
+      </div>
+
+      <div class="price-breakdown">
+        <div class="breakdown-row">
+          <span>Tiền hàng</span>
+          <span>{{ productService.cartTotal() | number:'1.0-0' }}đ</span>
+        </div>
+        <div class="breakdown-row">
+          <span>Phí giao COD</span>
+          <span>{{ productService.cartTotal() >= 500000 ? 'MIỄN PHÍ' : '30,000đ' }}</span>
+        </div>
+        <div class="breakdown-divider"></div>
+        <div class="breakdown-row total">
+          <span>Tổng thanh toán</span>
+          <span class="total-amount">{{ finalTotal | number:'1.0-0' }}đ</span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit-order" [disabled]="isSubmitting()">
+        @if (isSubmitting()) {
+          <i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang tạo đơn hàng...
+        } @else {
+          <i class="fa-solid fa-check mr-2"></i> Xác Nhận Đặt Hàng COD ({{ finalTotal | number:'1.0-0' }}đ)
+        }
+      </button>
+    </div>
+  </form>
+</div>
