@@ -1,0 +1,40 @@
+@if (toastService.currentToast(); as toast) {
+  <div class="toast-overlay" (click)="toastService.close()">
+    <div
+      class="toast-card toast-{{ toast.type }}"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="toast-icon">
+        @switch (toast.type) {
+          @case ('success') {
+            <i class="fa-solid fa-circle-check"></i>
+          }
+          @case ('error') {
+            <i class="fa-solid fa-circle-exclamation"></i>
+          }
+          @case ('warning') {
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          }
+          @case ('info') {
+            <i class="fa-solid fa-circle-info"></i>
+          }
+        }
+      </div>
+
+      <div class="toast-message">
+        {{ toast.message }}
+      </div>
+
+      <button
+        type="button"
+        class="toast-close-btn"
+        (click)="toastService.close()"
+        aria-label="Đóng thông báo"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="toast-progress-bar"></div>
+    </div>
+  </div>
+}

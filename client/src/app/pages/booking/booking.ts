@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { PetService } from '../../services/pet.service';
 import { BookingService } from '../../services/booking.service';
+import { ToastService } from '../../services/toast.service';
 import { Pet } from '../../models/pet.model';
 import { Service, Booking as BookingModel, TimeSlot, BookingStatus } from '../../models/booking.model';
 
@@ -23,6 +24,7 @@ interface DayOption {
 export class Booking implements OnInit {
   private readonly petService = inject(PetService);
   private readonly bookingService = inject(BookingService);
+  private readonly toastService = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
 
   readonly activeTab = signal<'book' | 'my-bookings'>('book');
@@ -82,13 +84,13 @@ export class Booking implements OnInit {
       next: (res) => {
         this.isConfirmingPaid.set(false);
         this.closeQrModal();
-        alert('🎉 Cảm ơn bạn! Hệ thống đã ghi nhận thanh toán giữ chỗ VietQR và xác nhận lịch hẹn của bạn.');
+        this.toastService.success('🎉 Cảm ơn bạn! Hệ thống đã ghi nhận thanh toán giữ chỗ VietQR và xác nhận lịch hẹn của bạn.');
         this.loadMyBookings();
         this.activeTab.set('my-bookings');
       },
       error: (err) => {
         this.isConfirmingPaid.set(false);
-        alert(err.error?.message || 'Có lỗi khi cập nhật trạng thái thanh toán.');
+        this.toastService.error(err.error?.message || 'Có lỗi khi cập nhật trạng thái thanh toán.');
       },
     });
   }
@@ -246,7 +248,7 @@ export class Booking implements OnInit {
               this.createdBooking.set(res.data);
               this.showQrModal.set(true);
             } else {
-              alert('🎉 Đặt lịch hẹn Spa thành công! Cửa hàng sẽ sớm liên hệ xác nhận.');
+              this.toastService.success('🎉 Đặt lịch hẹn Spa thành công! Cửa hàng sẽ sớm liên hệ xác nhận.');
               this.activeTab.set('my-bookings');
             }
           }
@@ -278,11 +280,12 @@ export class Booking implements OnInit {
     this.bookingService.cancelBooking(id).subscribe({
       next: (res) => {
         if (res.success) {
+          this.toastService.info('Đã hủy lịch hẹn thành công');
           this.loadMyBookings();
         }
       },
       error: (err) => {
-        alert(err.error?.message || 'Không thể hủy lịch hẹn');
+        this.toastService.error(err.error?.message || 'Không thể hủy lịch hẹn');
       },
     });
   }

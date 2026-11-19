@@ -11,58 +11,12 @@ export class ProductService {
   readonly API_URL = environment.apiUrl;
   private readonly CART_STORAGE_KEY = 'pawlocal_cart';
 
-  // State Signals
+  // State Signals (Loaded 100% from MongoDB Atlas)
   readonly products = signal<Product[]>([]);
   readonly categories = signal<Category[]>([]);
   readonly banners = signal<Banner[]>([]);
   readonly services = signal<GroomingService[]>([]);
-  readonly feedbacks = signal<Feedback[]>([
-    {
-      id: 1,
-      name: 'Thu Trang & Bé Corgi Mochi',
-      initials: 'TT',
-      rating: 5,
-      productName: 'Cắt Tỉa Lông Tạo Kiểu Toàn Diện',
-      comment: 'Bé Mochi nhà mình đi spa về thơm phức và form lông tròn xoe cực kỳ đáng yêu. Nhân viên nhiệt tình 10/10!',
-      date: '14/11/2026',
-    },
-    {
-      id: 2,
-      name: 'Minh Quân & Bé Mèo Mướp',
-      initials: 'MQ',
-      rating: 5,
-      productName: 'Pate Mèo Ciao Churu Vị Cá Hồi',
-      comment: 'Giao hàng siêu nhanh chỉ trong 2 tiếng. Bé mèo nhà mình kén ăn mà thấy tuýp này là chạy tới liền.',
-      date: '12/11/2026',
-    },
-    {
-      id: 3,
-      name: 'Hoàng Yến & Bé Poodle Bông',
-      initials: 'HY',
-      rating: 5,
-      productName: 'Tắm Sấy Khử Mùi & Thư Giãn',
-      comment: 'Dịch vụ chuyên nghiệp, đặt lịch online tiện lợi không phải chờ đợi. Lông mềm mượt thơm lâu.',
-      date: '10/11/2026',
-    },
-    {
-      id: 4,
-      name: 'Khánh Linh & Bé Mèo Simmy',
-      initials: 'KL',
-      rating: 5,
-      productName: 'Cát Vệ Sinh Đậu Nành Tofu (6L)',
-      comment: 'Cát đậu nành Tofu siêu khử mùi, xả thẳng bồn cầu cực kỳ tiện lợi và không bụi. Bé nhà mình rất thích!',
-      date: '08/11/2026',
-    },
-    {
-      id: 5,
-      name: 'Đức Anh & Bé Golden Bắp',
-      initials: 'ĐA',
-      rating: 5,
-      productName: 'Hạt Royal Canin Medium Puppy',
-      comment: 'Bé Bắp ăn hạt này tiêu hóa cực tốt, phân khuôn đẹp, lông bóng mượt và tăng cân đều đặn.',
-      date: '05/11/2026',
-    },
-  ]);
+  readonly feedbacks = signal<Feedback[]>([]);
 
   // Cart Signal
   readonly cart = signal<CartItem[]>(this.loadCartFromStorage());
@@ -90,12 +44,14 @@ export class ProductService {
         saleProducts: Product[];
         newProducts: Product[];
         services: GroomingService[];
+        feedbacks?: Feedback[];
       }>(`${this.API_URL}/home`)
       .subscribe({
         next: (res) => {
           if (res.banners) this.banners.set(res.banners);
           if (res.categories) this.categories.set(res.categories);
           if (res.services) this.services.set(res.services);
+          if (res.feedbacks) this.feedbacks.set(res.feedbacks);
 
           // 2. Nạp toàn bộ danh sách sản phẩm
           this.http
@@ -128,6 +84,12 @@ export class ProductService {
         p.id === Number(idOrSlug) ||
         p.slug === idOrSlug ||
         p._id === idOrSlug
+    );
+  }
+
+  fetchProductByIdOrSlug(idOrSlug: string | number) {
+    return this.http.get<{ success: boolean; data: Product }>(
+      `${this.API_URL}/products/${idOrSlug}`
     );
   }
 

@@ -13,22 +13,7 @@
         <span class="placeholder-label">{{ cat.name }}</span>
       </a>
     } @empty {
-      <a routerLink="/products" class="quick-item">
-        <div class="circle-placeholder"><i class="fa-solid fa-bowl-food action-icon"></i></div>
-        <span class="placeholder-label">Thức Ăn Hạt</span>
-      </a>
-      <a routerLink="/products" class="quick-item">
-        <div class="circle-placeholder"><i class="fa-solid fa-fish action-icon"></i></div>
-        <span class="placeholder-label">Pate Thưởng</span>
-      </a>
-      <a routerLink="/products" class="quick-item">
-        <div class="circle-placeholder"><i class="fa-solid fa-baseball action-icon"></i></div>
-        <span class="placeholder-label">Đồ Chơi</span>
-      </a>
-      <a routerLink="/products" class="quick-item">
-        <div class="circle-placeholder"><i class="fa-solid fa-soap action-icon"></i></div>
-        <span class="placeholder-label">Chăm Sóc</span>
-      </a>
+      <div class="category-loading-note">Đang tải danh mục từ MongoDB...</div>
     }
   </div>
 </section>

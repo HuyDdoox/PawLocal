@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-register',
@@ -14,6 +15,7 @@ import { AuthService } from '../../../services/auth.service';
 export class Register {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly toastService = inject(ToastService);
   private readonly router = inject(Router);
 
   readonly isLoading = signal<boolean>(false);
@@ -47,7 +49,7 @@ export class Register {
       next: (res) => {
         this.isLoading.set(false);
         if (res.success) {
-          alert('🎉 Đăng ký tài khoản thành công!');
+          this.toastService.success('🎉 Đăng ký tài khoản thành công! Chào mừng bạn đến với PawLocal.');
           this.router.navigate(['/']);
         }
       },

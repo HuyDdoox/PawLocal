@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { OrderService } from '../../../services/order.service';
+import { ToastService } from '../../../services/toast.service';
 import { Order, OrderStatus } from '../../../models/order.model';
 
 @Component({
@@ -13,6 +14,7 @@ import { Order, OrderStatus } from '../../../models/order.model';
 })
 export class MyOrders implements OnInit {
   private readonly orderService = inject(OrderService);
+  private readonly toastService = inject(ToastService);
 
   readonly orders = signal<Order[]>([]);
   readonly isLoading = signal<boolean>(true);
@@ -60,12 +62,12 @@ export class MyOrders implements OnInit {
       next: (res) => {
         this.isConfirming.set(false);
         this.closeQrModal();
-        alert('🎉 Xác nhận thanh toán thành công! Đơn hàng đã được chuyển sang trạng thái đang xử lý.');
+        this.toastService.success('🎉 Xác nhận thanh toán thành công! Đơn hàng đã chuyển sang chuẩn bị giao.');
         this.loadOrders();
       },
       error: (err) => {
         this.isConfirming.set(false);
-        alert(err.error?.message || 'Có lỗi xảy ra khi xác nhận thanh toán.');
+        this.toastService.error(err.error?.message || 'Có lỗi xảy ra khi xác nhận thanh toán.');
       },
     });
   }

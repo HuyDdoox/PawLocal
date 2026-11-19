@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { AdminService } from '../../../services/admin.service';
 import { Order, OrderStatus } from '../../../models/order.model';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-admin-orders',
@@ -12,6 +13,7 @@ import { Order, OrderStatus } from '../../../models/order.model';
 })
 export class AdminOrders implements OnInit {
   private readonly adminService = inject(AdminService);
+  private readonly toast = inject(ToastService);
 
   readonly orders = signal<Order[]>([]);
   readonly isLoading = signal<boolean>(true);
@@ -45,11 +47,12 @@ export class AdminOrders implements OnInit {
     this.adminService.updateOrderStatus(orderId, status).subscribe({
       next: (res) => {
         if (res.success) {
+          this.toast.success('Đã cập nhật trạng thái đơn hàng');
           this.loadOrders();
         }
       },
       error: (err) => {
-        alert(err.error?.message || 'Không thể cập nhật trạng thái đơn hàng');
+        this.toast.error(err.error?.message || 'Không thể cập nhật trạng thái đơn hàng');
       },
     });
   }
@@ -59,11 +62,12 @@ export class AdminOrders implements OnInit {
     this.adminService.updateOrderStatus(order._id, undefined, nextStatus).subscribe({
       next: (res) => {
         if (res.success) {
+          this.toast.success(`Đã cập nhật thanh toán: ${nextStatus === 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán'}`);
           this.loadOrders();
         }
       },
       error: (err) => {
-        alert(err.error?.message || 'Lỗi khi cập nhật trạng thái thanh toán');
+        this.toast.error(err.error?.message || 'Lỗi khi cập nhật trạng thái thanh toán');
       },
     });
   }

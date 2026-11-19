@@ -13,6 +13,7 @@ const Order = require('../models/Order');
 const Booking = require('../models/Booking');
 const Banner = require('../models/Banner');
 const Blog = require('../models/Blog');
+const Review = require('../models/Review');
 
 const seedAll = async (shouldExit = true) => {
   try {
@@ -32,6 +33,7 @@ const seedAll = async (shouldExit = true) => {
       Booking.deleteMany({}),
       Banner.deleteMany({}),
       Blog.deleteMany({}),
+      Review.deleteMany({}),
     ]);
     console.log('[SeedAll] Cleaned old database collections');
 
@@ -474,6 +476,56 @@ const seedAll = async (shouldExit = true) => {
       },
     ]);
     console.log('[SeedAll] Created 3 Pet Care Blogs with Slugs');
+
+    // 10. Seed Customer Reviews from MongoDB
+    await Review.insertMany([
+      {
+        name: 'Thu Trang & Bé Corgi Mochi',
+        initials: 'TT',
+        rating: 5,
+        productName: 'Cắt Tỉa Lông Tạo Kiểu Toàn Diện',
+        comment: 'Bé Mochi nhà mình đi spa về thơm phức và form lông tròn xoe cực kỳ đáng yêu. Nhân viên nhiệt tình 10/10!',
+        date: '14/11/2026',
+        isApproved: true,
+      },
+      {
+        name: 'Minh Quân & Bé Mèo Mướp',
+        initials: 'MQ',
+        rating: 5,
+        productName: 'Pate Mèo Ciao Churu Vị Cá Hồi',
+        comment: 'Giao hàng siêu nhanh chỉ trong 2 tiếng. Bé mèo nhà mình kén ăn mà thấy tuýp này là chạy tới liền.',
+        date: '12/11/2026',
+        isApproved: true,
+      },
+      {
+        name: 'Hoàng Yến & Bé Poodle Bông',
+        initials: 'HY',
+        rating: 5,
+        productName: 'Tắm Sấy Khử Mùi & Thư Giãn',
+        comment: 'Dịch vụ chuyên nghiệp, đặt lịch online tiện lợi không phải chờ đợi. Lông mềm mượt thơm lâu.',
+        date: '10/11/2026',
+        isApproved: true,
+      },
+      {
+        name: 'Khánh Linh & Bé Mèo Simmy',
+        initials: 'KL',
+        rating: 5,
+        productName: 'Cát Vệ Sinh Đậu Nành Tofu (6L)',
+        comment: 'Cát đậu nành Tofu siêu khử mùi, xả thẳng bồn cầu cực kỳ tiện lợi và không bụi. Bé nhà mình rất thích!',
+        date: '08/11/2026',
+        isApproved: true,
+      },
+      {
+        name: 'Đức Anh & Bé Golden Bắp',
+        initials: 'ĐA',
+        rating: 5,
+        productName: 'Hạt Royal Canin Medium Puppy',
+        comment: 'Bé Bắp ăn hạt này tiêu hóa cực tốt, phân khuôn đẹp, lông bóng mượt và tăng cân đều đặn.',
+        date: '05/11/2026',
+        isApproved: true,
+      },
+    ]);
+    console.log('[SeedAll] Created 5 Customer Reviews on MongoDB Atlas');
 
     console.log('🎉 [SeedAll] ALL DATA SEEDED SUCCESSFULLY!');
     if (shouldExit) {

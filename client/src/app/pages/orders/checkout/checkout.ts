@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { ProductService } from '../../../services/product.service';
 import { OrderService } from '../../../services/order.service';
+import { ToastService } from '../../../services/toast.service';
 import { Order } from '../../../models/order.model';
 
 @Component({
@@ -19,6 +20,7 @@ export class Checkout implements OnInit {
   readonly productService = inject(ProductService);
   private readonly orderService = inject(OrderService);
   private readonly authService = inject(AuthService);
+  private readonly toastService = inject(ToastService);
   private readonly router = inject(Router);
 
   readonly isSubmitting = signal<boolean>(false);
@@ -80,12 +82,12 @@ export class Checkout implements OnInit {
       next: (res) => {
         this.isConfirmingPaid.set(false);
         this.showQrModal.set(false);
-        alert('🎉 Cảm ơn bạn! Hệ thống đã ghi nhận thanh toán VietQR và đang chuẩn bị giao hàng.');
+        this.toastService.success('🎉 Cảm ơn bạn! Hệ thống đã ghi nhận thanh toán VietQR và đang chuẩn bị giao hàng.');
         this.router.navigate(['/my-orders']);
       },
       error: (err) => {
         this.isConfirmingPaid.set(false);
-        alert(err.error?.message || 'Có lỗi khi cập nhật trạng thái thanh toán.');
+        this.toastService.error(err.error?.message || 'Có lỗi khi cập nhật trạng thái thanh toán.');
       },
     });
   }
@@ -131,7 +133,7 @@ export class Checkout implements OnInit {
               this.createdOrder.set(res.data);
               this.showQrModal.set(true);
             } else {
-              alert('🎉 Đặt hàng COD thành công! Mã đơn: ' + res.data._id.substring(res.data._id.length - 6).toUpperCase());
+              this.toastService.success('🎉 Đặt hàng COD thành công! Mã đơn: ' + res.data._id.substring(res.data._id.length - 6).toUpperCase());
               this.router.navigate(['/my-orders']);
             }
           }

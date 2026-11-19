@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { AdminService } from '../../../services/admin.service';
 import { Booking, BookingStatus } from '../../../models/booking.model';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-admin-bookings',
@@ -12,6 +13,7 @@ import { Booking, BookingStatus } from '../../../models/booking.model';
 })
 export class AdminBookings implements OnInit {
   private readonly adminService = inject(AdminService);
+  private readonly toast = inject(ToastService);
 
   readonly bookings = signal<Booking[]>([]);
   readonly isLoading = signal<boolean>(true);
@@ -45,11 +47,12 @@ export class AdminBookings implements OnInit {
     this.adminService.updateBookingStatus(bookingId, status).subscribe({
       next: (res) => {
         if (res.success) {
+          this.toast.success('Đã cập nhật trạng thái lịch hẹn');
           this.loadBookings();
         }
       },
       error: (err) => {
-        alert(err.error?.message || 'Không thể cập nhật trạng thái lịch hẹn');
+        this.toast.error(err.error?.message || 'Không thể cập nhật trạng thái lịch hẹn');
       },
     });
   }
@@ -59,11 +62,12 @@ export class AdminBookings implements OnInit {
     this.adminService.updateBookingStatus(booking._id, undefined, nextStatus).subscribe({
       next: (res) => {
         if (res.success) {
+          this.toast.success(`Đã cập nhật thanh toán: ${nextStatus === 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán'}`);
           this.loadBookings();
         }
       },
       error: (err) => {
-        alert(err.error?.message || 'Lỗi khi cập nhật trạng thái thanh toán');
+        this.toast.error(err.error?.message || 'Lỗi khi cập nhật trạng thái thanh toán');
       },
     });
   }

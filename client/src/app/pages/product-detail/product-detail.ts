@@ -18,11 +18,25 @@ export class ProductDetail {
   readonly slug = input<string>('');
 
   readonly isAdded = signal<boolean>(false);
+  readonly directProduct = signal<Product | undefined>(undefined);
 
   readonly product = computed<Product | undefined>(() => {
     const s = this.slug() || this.id();
     if (!s) return undefined;
-    return this.productService.getProductById(s);
+    const found = this.productService.getProductById(s);
+    if (found) return found;
+
+    // Direct fetch from MongoDB if not found in cache
+    if (!this.directProduct()) {
+      this.productService.fetchProductByIdOrSlug(s).subscribe({
+        next: (res) => {
+          if (res?.data) {
+            this.directProduct.set(res.data);
+          }
+        },
+      });
+    }
+    return this.directProduct();
   });
 
   readonly productId = computed(() => this.product()?.id || 0);

@@ -2,14 +2,16 @@ const Banner = require('../models/Banner');
 const Category = require('../models/Category');
 const Product = require('../models/Product');
 const Service = require('../models/Service');
+const Review = require('../models/Review');
 
 const getHomeData = async (req, res) => {
   try {
-    const [banners, categories, services, allProducts] = await Promise.all([
+    const [banners, categories, services, allProducts, reviews] = await Promise.all([
       Banner.find().sort({ order: 1 }).limit(3),
       Category.find().sort({ order: 1 }),
       Service.find({ isActive: true }).limit(4),
       Product.find({ isAvailable: true }),
+      Review.find({ isApproved: true }).sort({ createdAt: -1 }).limit(6),
     ]);
 
     // 4 san pham hot
@@ -34,6 +36,7 @@ const getHomeData = async (req, res) => {
       saleProducts: saleProducts.length > 0 ? saleProducts : allProducts.slice(0, 4),
       newProducts,
       services,
+      feedbacks: reviews,
     });
   } catch (error) {
     return res.status(500).json({ success: false, error: 'Không thể tải dữ liệu trang chủ', details: error.message });

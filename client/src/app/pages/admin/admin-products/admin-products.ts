@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { AdminService } from '../../../services/admin.service';
 import { ProductService } from '../../../services/product.service';
 import { Product, Category } from '../../../models/product.model';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-admin-products',
@@ -18,6 +19,7 @@ export class AdminProducts implements OnInit {
   private readonly adminService = inject(AdminService);
   private readonly productService = inject(ProductService);
   private readonly http = inject(HttpClient);
+  private readonly toast = inject(ToastService);
 
   readonly products = signal<Product[]>([]);
   readonly categories = signal<Category[]>([]);
@@ -72,12 +74,13 @@ export class AdminProducts implements OnInit {
     this.adminService.toggleProductAvailability(id).subscribe({
       next: (res) => {
         if (res.success) {
+          this.toast.success('Đã cập nhật trạng thái hiển thị');
           this.loadProducts();
           this.productService.loadData();
         }
       },
       error: (err) => {
-        alert(err.error?.message || 'Không thể đổi trạng thái');
+        this.toast.error(err.error?.message || 'Không thể đổi trạng thái');
       },
     });
   }
@@ -92,7 +95,7 @@ export class AdminProducts implements OnInit {
       next: (res) => {
         this.isSubmitting.set(false);
         if (res.success) {
-          alert('Thêm sản phẩm thành công!');
+          this.toast.success('Thêm sản phẩm thành công!');
           this.productForm.reset({ stock: 10, price: 0 });
           this.showAddForm.set(false);
           this.loadProducts();
@@ -101,7 +104,7 @@ export class AdminProducts implements OnInit {
       },
       error: (err) => {
         this.isSubmitting.set(false);
-        alert(err.error?.message || 'Không thể tạo sản phẩm');
+        this.toast.error(err.error?.message || 'Không thể tạo sản phẩm');
       },
     });
   }

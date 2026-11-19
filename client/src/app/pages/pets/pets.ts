@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { PetService } from '../../services/pet.service';
 import { Pet } from '../../models/pet.model';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-pets',
@@ -13,6 +14,7 @@ import { Pet } from '../../models/pet.model';
 })
 export class Pets implements OnInit {
   private readonly petService = inject(PetService);
+  private readonly toast = inject(ToastService);
 
   readonly pets = signal<Pet[]>([]);
   readonly isLoading = signal<boolean>(true);
@@ -41,11 +43,12 @@ export class Pets implements OnInit {
     this.petService.deletePet(id).subscribe({
       next: (res) => {
         if (res.success) {
+          this.toast.success('Đã xóa hồ sơ thú cưng thành công');
           this.loadPets();
         }
       },
       error: (err) => {
-        alert(err.error?.message || 'Không thể xóa hồ sơ');
+        this.toast.error(err.error?.message || 'Không thể xóa hồ sơ');
       },
     });
   }

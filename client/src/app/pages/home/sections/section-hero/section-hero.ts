@@ -13,17 +13,8 @@ import { Banner } from '../../../../models/product.model';
 export class SectionHero {
   readonly productService = inject(ProductService);
 
-  readonly currentBanner = computed<Banner>(() => {
+  readonly currentBanner = computed<Banner | null>(() => {
     const banners = this.productService.banners();
-    if (banners && banners.length > 0) {
-      return banners[0];
-    }
-    return {
-      id: 1,
-      title: 'PAWLOCAL SPA & GROOMING 2026',
-      subtitle: 'Ưu đãi đặt lịch tắm cắt tỉa giảm ngay 25% cho Boss yêu.',
-      image: '/images/banners/hero-banner.jpg',
-      link: '/booking',
-    };
+    return banners && banners.length > 0 ? banners[0] : null;
   });
 }
