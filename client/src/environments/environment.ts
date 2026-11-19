@@ -3,13 +3,12 @@ export const environment = {
   /**
    * Cấu hình URL Backend API:
    * - Khi chạy local dev: 'http://localhost:5000/api'
-   * - Khi deploy lên Vercel All-in-One: '/api' (cùng domain, không bị lỗi CORS)
-   * - Nếu deploy backend riêng trên Render: 'https://pawlocal-backend.onrender.com/api'
+   * - Khi chạy trên Cloud/Vercel: Kết nối trực tiếp tới Render Backend API
    */
   apiUrl:
     typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost' &&
     window.location.hostname !== '127.0.0.1'
-      ? '/api'
+      ? 'https://pawlocal-api.onrender.com/api'
       : 'http://localhost:5000/api',
 };

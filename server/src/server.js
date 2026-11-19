@@ -77,7 +77,7 @@ const mountRoute = (prefix, handler) => {
 };
 
 mountRoute('/docs', docsRoutes);
-app.get(['/api', '/docs'], (req, res) => res.redirect('/api/docs'));
+app.get(['/', '/api', '/docs'], (req, res) => res.redirect('/api/docs'));
 mountRoute('/home', homeRoutes);
 mountRoute('/blogs', blogRoutes);
 mountRoute('/auth', authRoutes);
