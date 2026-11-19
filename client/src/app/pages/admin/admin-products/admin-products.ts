@@ -6,6 +6,7 @@ import { AdminService } from '../../../services/admin.service';
 import { ProductService } from '../../../services/product.service';
 import { Product, Category } from '../../../models/product.model';
 import { ToastService } from '../../../services/toast.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-admin-products',
@@ -56,7 +57,7 @@ export class AdminProducts implements OnInit {
   }
 
   loadCategories(): void {
-    this.http.get<{ success: boolean; data: Category[] }>('http://localhost:5000/api/categories').subscribe({
+    this.http.get<{ success: boolean; data: Category[] }>(`${environment.apiUrl}/categories`).subscribe({
       next: (res) => {
         if (res.data) {
           this.categories.set(res.data);
@@ -91,7 +92,7 @@ export class AdminProducts implements OnInit {
     this.isSubmitting.set(true);
     const formVal = this.productForm.getRawValue();
 
-    this.http.post<{ success: boolean; data: Product }>('http://localhost:5000/api/products', formVal).subscribe({
+    this.http.post<{ success: boolean; data: Product }>(`${environment.apiUrl}/products`, formVal).subscribe({
       next: (res) => {
         this.isSubmitting.set(false);
         if (res.success) {
