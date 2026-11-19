@@ -37,8 +37,18 @@ app.use(
 // Serve static uploaded files
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
+// Ensure DB connection before processing request
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+  } catch (err) {
+    console.error('[DB Middleware Error]', err.message);
+  }
+  next();
+});
+
 // Health Check Endpoint
-app.get('/api/health', (req, res) => {
+app.get(['/api/health', '/health'], (req, res) => {
   res.status(200).json({
     status: 'ok',
     message: 'PawLocal API is running smoothly',
@@ -60,18 +70,24 @@ const serviceRoutes = require('./routes/service.routes');
 const bookingRoutes = require('./routes/booking.routes');
 const adminRoutes = require('./routes/admin.routes');
 
-app.use('/api/docs', docsRoutes);
-app.get('/api', (req, res) => res.redirect('/api/docs'));
-app.use('/api/home', homeRoutes);
-app.use('/api/blogs', blogRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/pets', petRoutes);
-app.use('/api/services', serviceRoutes);
-app.use('/api/bookings', bookingRoutes);
-app.use('/api/admin', adminRoutes);
+// Helper to support both with and without /api prefix
+const mountRoute = (prefix, handler) => {
+  app.use(`/api${prefix}`, handler);
+  app.use(prefix, handler);
+};
+
+mountRoute('/docs', docsRoutes);
+app.get(['/api', '/docs'], (req, res) => res.redirect('/api/docs'));
+mountRoute('/home', homeRoutes);
+mountRoute('/blogs', blogRoutes);
+mountRoute('/auth', authRoutes);
+mountRoute('/categories', categoryRoutes);
+mountRoute('/products', productRoutes);
+mountRoute('/orders', orderRoutes);
+mountRoute('/pets', petRoutes);
+mountRoute('/services', serviceRoutes);
+mountRoute('/bookings', bookingRoutes);
+mountRoute('/admin', adminRoutes);
 
 // Fallback 404 for undefined routes
 app.use((req, res) => {
