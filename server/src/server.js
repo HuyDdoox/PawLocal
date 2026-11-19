@@ -48,6 +48,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Routes
+const docsRoutes = require('./routes/docs.routes');
 const homeRoutes = require('./routes/home.routes');
 const blogRoutes = require('./routes/blog.routes');
 const authRoutes = require('./routes/auth.routes');
@@ -59,6 +60,8 @@ const serviceRoutes = require('./routes/service.routes');
 const bookingRoutes = require('./routes/booking.routes');
 const adminRoutes = require('./routes/admin.routes');
 
+app.use('/api/docs', docsRoutes);
+app.get('/api', (req, res) => res.redirect('/api/docs'));
 app.use('/api/home', homeRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/auth', authRoutes);
